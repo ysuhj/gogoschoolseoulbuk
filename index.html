@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>빗물받이 탐험대 · 북가좌동 · 4학년 새싹반</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌧️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{
+  --bg:#DDEFF8; --surface:#FFFFFF; --surface2:#EEF6FA; --ink:#173042; --muted:#4F6676; --line:#B9D3E0;
+  --sky:#1E7BC4; --sky-ink:#FFFFFF; --sun:#FFC83A; --sun-ink:#3A2A00; --grate:#2F4A5C;
+  --g0:#2E9A5E; --g1:#B8960B; --g2:#E07420; --g3:#D23A2C;
+  --display:"Jua","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --navh:84px;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1B23; --surface:#18272F; --surface2:#20323C; --ink:#E6F0F5; --muted:#A3B8C3; --line:#2F4653;
+    --sky:#62B2F0; --sky-ink:#06131C; --sun:#F4BE2E; --sun-ink:#261C00; --grate:#9FB6C4;
+    --g0:#52C486; --g1:#DDBE3C; --g2:#F39A55; --g3:#F2685C;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1B23; --surface:#18272F; --surface2:#20323C; --ink:#E6F0F5; --muted:#A3B8C3; --line:#2F4653;
+  --sky:#62B2F0; --sky-ink:#06131C; --sun:#F4BE2E; --sun-ink:#261C00; --grate:#9FB6C4;
+  --g0:#52C486; --g1:#DDBE3C; --g2:#F39A55; --g3:#F2685C;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 120px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.6;-webkit-text-size-adjust:100%}
+img{max-width:100%;display:block}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:4px solid var(--sun);outline-offset:2px}
+.hide{display:none!important}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--sky);color:var(--sky-ink)}
+.top-inner{max-width:900px;margin:0 auto;padding:10px 12px 8px}
+.brand{font-family:var(--display);font-weight:400;font-size:1.7rem;line-height:1.2;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+.brand .cnt{margin-left:auto;font-family:var(--body);font-size:.85rem;opacity:.9;font-weight:500}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.tab{border:0;border-radius:14px;background:rgba(255,255,255,.18);color:inherit;padding:8px 4px;font-family:var(--display);font-size:1.15rem;cursor:pointer;min-height:52px;display:flex;flex-direction:column;align-items:center;line-height:1.15}
+.tab .ic{font-size:1.4rem}
+.tab[aria-selected="true"]{background:var(--surface);color:var(--sky)}
+
+main{max-width:900px;margin:0 auto;padding:16px 14px calc(var(--navh) + 30px)}
+.narrow{max-width:620px;margin:0 auto}
+
+/* wizard */
+.progress{display:flex;gap:6px;margin:2px 0 14px}
+.progress i{flex:1;height:10px;border-radius:5px;background:var(--line)}
+.progress i.on{background:var(--sun)}
+.card{background:var(--surface);border-radius:22px;padding:22px 18px 24px;border:2px solid var(--line)}
+.q{font-family:var(--display);font-weight:400;font-size:clamp(1.7rem,6.5vw,2.2rem);line-height:1.25;margin:0 0 6px}
+.sub{color:var(--muted);margin:0 0 18px;font-size:1.05rem}
+.say{font-size:1rem;margin-top:12px;min-height:1.4em;font-weight:500}
+.say.err{color:var(--g3)}
+
+.big{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;border-radius:18px;padding:16px;min-height:72px;font-family:var(--display);font-size:1.6rem;cursor:pointer;text-decoration:none}
+.big.sun{background:var(--sun);color:var(--sun-ink);box-shadow:0 5px 0 #C99A16}
+.big.sky{background:var(--sky);color:var(--sky-ink);box-shadow:0 5px 0 #145D96}
+.big:active{transform:translateY(3px);box-shadow:none}
+.link{background:none;border:0;color:var(--sky);text-decoration:underline;cursor:pointer;padding:10px 0;font-size:1rem}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.promise{list-style:none;padding:0;margin:0 0 22px;display:grid;gap:12px}
+.promise li{display:flex;gap:14px;align-items:center;background:var(--surface2);border-radius:16px;padding:14px;font-size:1.1rem;font-weight:500}
+.promise .e{font-size:2rem;flex:none;width:2.6rem;text-align:center}
+
+/* photo */
+.shot{margin-top:16px;border-radius:16px;overflow:hidden;border:3px solid var(--line)}
+
+/* grid */
+.grate-wrap{position:relative;border-radius:16px;overflow:hidden;background:var(--grate);touch-action:none;user-select:none;-webkit-user-select:none}
+.grate-wrap img{width:100%;height:auto}
+.grate{position:absolute;inset:0;display:grid}
+.cell{border:2px solid rgba(255,255,255,.75);box-shadow:inset 0 0 0 1px rgba(0,0,0,.25);cursor:pointer}
+.cell.on{background:repeating-linear-gradient(-45deg,rgba(255,200,58,.85) 0 10px,rgba(30,30,30,.5) 10px 20px);border-color:var(--sun)}
+.face{display:flex;align-items:center;gap:14px;margin-top:16px;padding:12px 16px;border-radius:18px;background:var(--surface2)}
+.face .e{font-size:3.2rem;line-height:1}
+.face .t{font-family:var(--display);font-size:1.6rem;line-height:1.2}
+.face .n{color:var(--muted);font-size:1rem}
+
+/* picture tiles */
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media (min-width:520px){.tiles.four{grid-template-columns:repeat(4,1fr)}.tiles.three{grid-template-columns:repeat(3,1fr)}}
+.tile{border:3px solid var(--line);background:var(--surface);border-radius:18px;padding:12px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:110px;justify-content:center;position:relative}
+.tile .e{font-size:2.6rem;line-height:1.1}
+.tile .l{font-weight:700;font-size:1rem;text-align:center;line-height:1.3}
+.tile[aria-pressed="true"]{border-color:var(--sky);background:var(--surface2)}
+.tile[aria-pressed="true"]::after{content:"✓";position:absolute;top:6px;right:8px;width:28px;height:28px;border-radius:50%;background:var(--sky);color:var(--sky-ink);font-weight:700;display:grid;place-items:center;font-size:1rem}
+.mini{margin-top:20px}
+.mini h3{font-family:var(--display);font-weight:400;font-size:1.3rem;margin:0 0 10px}
+.yn{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.yn .tile{min-height:70px;flex-direction:row;gap:8px}
+.yn .tile .e{font-size:1.8rem}
+.stepper{display:flex;align-items:center;gap:14px}
+.stepper button{width:60px;height:60px;border-radius:50%;border:3px solid var(--line);background:var(--surface);font-size:1.8rem;cursor:pointer;line-height:1}
+.stepper output{font-family:var(--display);font-size:2.4rem;min-width:2.5ch;text-align:center}
+
+/* location */
+.where{margin-top:14px;padding:14px;border-radius:16px;background:var(--surface2);font-weight:500;display:flex;gap:10px;align-items:center}
+.where .e{font-size:2rem}
+.field{display:flex;flex-direction:column;gap:6px;margin-top:16px}
+.field label{font-weight:700}
+input[type=text],textarea{width:100%;border:3px solid var(--line);border-radius:14px;background:var(--surface);padding:12px 14px;min-height:56px;font-size:1.1rem}
+textarea{min-height:90px;resize:vertical}
+input:focus,textarea:focus{border-color:var(--sky);outline:none}
+
+/* wizard nav */
+.wnav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:2px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px))}
+.wnav-in{max-width:620px;margin:0 auto;display:grid;grid-template-columns:1fr 2fr;gap:10px}
+.wnav .big{min-height:60px;font-size:1.35rem}
+.wnav .back{background:var(--surface2);color:var(--ink);border:2px solid var(--line)}
+
+/* done */
+.done{text-align:center}
+.done .e{font-size:5rem;line-height:1.1}
+
+/* map */
+.box{background:var(--surface);border:2px solid var(--line);border-radius:20px;overflow:hidden}
+.box-head{padding:14px 16px 4px}
+.box-head h2{font-family:var(--display);font-weight:400;font-size:1.6rem;margin:0}
+.filters{display:flex;gap:8px;overflow-x:auto;padding:10px 16px 12px}
+.fchip{flex:none;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;cursor:pointer;font-size:1rem;font-weight:500;white-space:nowrap}
+.fchip[aria-pressed="true"]{background:var(--sky);border-color:var(--sky);color:var(--sky-ink)}
+#mapSvg{display:block;width:100%;height:auto;background:var(--surface2)}
+#mapSvg .gl{stroke:var(--line);stroke-width:1.5}
+#mapSvg .gt{fill:var(--muted);font-size:16px;font-family:var(--body)}
+#mapSvg .mk{cursor:pointer}
+#mapSvg .mk circle{stroke:#fff;stroke-width:4}
+#mapSvg .mk text{fill:#fff;font-size:15px;font-weight:700;font-family:var(--body);text-anchor:middle;dominant-baseline:central;pointer-events:none}
+#mapSvg .mk:focus-visible circle{stroke:var(--sun);stroke-width:6}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;padding:12px 16px;font-size:1rem}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:16px;height:16px;border-radius:50%;display:inline-block}
+.note{font-size:.92rem;color:var(--muted);padding:0 16px 14px;margin:0}
+
+/* results */
+.hero{font-family:var(--display);font-size:clamp(1.6rem,6vw,2.3rem);line-height:1.3;margin:4px 0 16px}
+.faces{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.fbox{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:12px 4px;text-align:center}
+.fbox .e{font-size:2.2rem;line-height:1.1}
+.fbox .c{font-family:var(--display);font-size:1.8rem;line-height:1.2}
+.fbox .l{font-size:.85rem;color:var(--muted);line-height:1.3}
+.panel{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:16px;margin-bottom:16px}
+.panel h3{font-family:var(--display);font-weight:400;font-size:1.35rem;margin:0 0 10px}
+.hbar{display:grid;grid-template-columns:2rem 6.5em 1fr 2.8em;gap:8px;align-items:center;margin:8px 0;font-size:1rem}
+.hbar .e{font-size:1.4rem}
+.hbar .track{height:18px;background:var(--surface2);border-radius:9px;overflow:hidden}
+.hbar .track i{display:block;height:100%;background:var(--sky);border-radius:9px}
+.hbar .v{text-align:right;font-weight:700}
+.list{display:grid;gap:10px}
+.item{display:grid;grid-template-columns:76px 1fr;gap:12px;align-items:center;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:10px;text-align:left;cursor:pointer;width:100%}
+.item img,.item .ph{width:76px;height:76px;object-fit:cover;border-radius:12px;background:var(--surface2)}
+.item .t{font-weight:700;font-size:1.05rem}
+.item .s{color:var(--muted);font-size:.92rem;display:block}
+details.teacher{margin-top:22px;background:var(--surface);border:2px dashed var(--line);border-radius:16px;padding:12px 16px}
+details.teacher summary{cursor:pointer;font-weight:700}
+.tbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.sbtn{border:2px solid var(--line);background:var(--surface2);border-radius:12px;padding:10px 14px;cursor:pointer;font-size:1rem;font-weight:500}
+.empty{padding:40px 16px;text-align:center;color:var(--muted);font-size:1.1rem}
+
+/* dialog */
+dialog{border:0;border-radius:22px;padding:0;max-width:min(560px,94vw);width:100%;background:var(--surface);color:var(--ink);max-height:90vh}
+dialog::backdrop{background:rgba(8,20,28,.6)}
+.dlg{padding:16px 18px 22px;overflow:auto}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.dlg-head h3{margin:0;font-family:var(--display);font-weight:400;font-size:1.6rem}
+.close{border:0;background:var(--surface2);border-radius:50%;width:48px;height:48px;cursor:pointer;font-size:1.3rem}
+.facts{list-style:none;padding:0;margin:14px 0;display:grid;gap:8px}
+.facts li{display:flex;gap:10px;align-items:flex-start}
+.facts .e{width:1.8rem;flex:none;text-align:center;font-size:1.3rem}
+.del{border:2px solid var(--g3);color:var(--g3);background:transparent;border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:700}
+
+@keyframes nudge{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.nudge{animation:nudge .25s 2}
+@media (prefers-reduced-motion: reduce){.nudge{animation:none}.big:active{transform:none}}
+.top,.wnav{z-index:1100}
+.pickmap{height:340px;border-radius:16px;margin-top:14px;border:3px solid var(--line);z-index:1}
+#bigMap{height:62vh;min-height:360px;z-index:1}
+.pin{width:36px;height:36px;border-radius:50%;border:3px solid #fff;color:#fff;font:700 15px/1 var(--body);display:grid;place-items:center;box-shadow:0 2px 5px rgba(0,0,0,.4)}
+.pin.g0{background:var(--g0)}.pin.g1{background:var(--g1)}.pin.g2{background:var(--g2)}.pin.g3{background:var(--g3)}
+.refresh{display:flex;justify-content:flex-end;margin:0 0 10px}
+.leaflet-container{font-family:var(--body)}
+
+/* ===== 수정 시안 추가 스타일 ===== */
+.badge{display:inline-block;background:var(--sun);color:var(--sun-ink);border-radius:999px;padding:0 8px;font-size:.78rem;font-weight:700;margin-right:4px}
+.editbar{display:flex;align-items:center;gap:10px;background:var(--sun);color:var(--sun-ink);border-radius:16px;padding:10px 14px;margin:0 0 12px;font-weight:700}
+.editbar button{margin-left:auto;border:2px solid currentColor;background:transparent;color:inherit;border-radius:12px;padding:6px 12px;cursor:pointer;font-weight:700}
+.resume{background:var(--surface2);border:2px dashed var(--sky);border-radius:16px;padding:14px;margin:0 0 18px}
+.resume p{margin:0 0 10px;font-weight:700}
+.resume .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.resume button{border:0;border-radius:12px;padding:12px;font-weight:700;cursor:pointer;font-size:1rem}
+.resume .go{background:var(--sky);color:var(--sky-ink)}
+.resume .no{background:var(--surface);border:2px solid var(--line)}
+.sec-h{font-family:var(--display);font-weight:400;font-size:1.4rem;margin:0 0 10px}
+.tiles.phase .tile{min-height:92px}
+.check{display:flex;gap:12px;align-items:center;width:100%;margin-top:14px;border:3px solid var(--line);background:var(--surface);border-radius:16px;padding:12px 14px;cursor:pointer;text-align:left;font-weight:700;font-size:1rem}
+.check .box{flex:none;width:34px;height:34px;border-radius:10px;border:3px solid var(--line);display:grid;place-items:center;font-size:1.2rem}
+.check[aria-pressed="true"]{border-color:var(--g0)}
+.check[aria-pressed="true"] .box{background:var(--g0);border-color:var(--g0);color:#fff}
+.check[aria-pressed="true"] .box::after{content:"✓"}
+.tip{background:var(--surface2);border-radius:14px;padding:10px 14px;font-size:.98rem;margin:0 0 14px}
+.warn{background:color-mix(in srgb,var(--g2) 18%,var(--surface));border:2px solid var(--g2);border-radius:14px;padding:10px 14px;margin-top:12px;font-weight:500}
+.fbar{display:flex;flex-wrap:wrap;gap:8px 10px;padding:10px 16px 12px;align-items:flex-end}
+.fbar label{display:flex;flex-direction:column;gap:2px;font-size:.82rem;color:var(--muted);font-weight:700}
+select{min-height:44px;border:2px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:4px 8px;font:inherit;font-size:1rem}
+.toggle{min-height:44px;border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:6px 12px;cursor:pointer;font-weight:700;font-size:.95rem}
+.toggle[aria-pressed="true"]{background:var(--sun);border-color:var(--sun);color:var(--sun-ink)}
+.pin.gx{background:#7D8A93}
+.rbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin:0 0 12px}
+.rbar .r{display:flex;gap:8px;flex-wrap:wrap}
+.faces.three{grid-template-columns:repeat(3,1fr)}
+.rank{display:grid;gap:8px}
+.rank .item{grid-template-columns:2.4rem 64px 1fr}
+.rank .item img,.rank .item .ph{width:64px;height:64px}
+.rank .no{font-family:var(--display);font-size:1.6rem;text-align:center}
+.chk{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.chk li{background:var(--surface2);border-radius:12px;padding:10px 12px}
+.chk .lnk{background:none;border:0;color:var(--sky);text-decoration:underline;cursor:pointer;font:inherit;padding:0 2px}
+.ok{color:var(--g0);font-weight:700}
+.dlg-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.edit{border:2px solid var(--sky);color:var(--sky);background:transparent;border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:700}
+.pending{display:inline-block;background:var(--g1);color:#fff;border-radius:8px;padding:0 6px;font-size:.8rem;margin-left:4px}
+.tpin{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.tpin input{max-width:180px;min-height:44px}
+.small{font-size:.9rem;color:var(--muted);margin:8px 0 0}
+details.changes{margin-top:14px;border-top:2px dashed var(--line);padding-top:10px}
+details.changes summary{cursor:pointer;font-weight:700}
+.clist{margin:10px 0 0;padding-left:1.4em;display:grid;gap:10px;font-size:.95rem;line-height:1.55}
+.clist .cx{color:var(--sky);font-size:.85rem;font-weight:700}
+.clist .was{color:var(--muted);font-size:.88rem}
+.clist code{font-size:.85rem;background:var(--surface2);padding:0 4px;border-radius:4px}
+/* 교실 살펴보기 */
+.ifilter{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin:0 0 14px}
+.ifilter label{display:flex;flex-direction:column;gap:2px;font-size:.85rem;color:var(--muted);font-weight:700}
+.iseg{display:flex;gap:6px;flex-wrap:wrap}
+.iseg button{min-height:44px;border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:6px 12px;cursor:pointer;font-weight:700;font-size:.95rem;color:var(--ink)}
+.iseg button[aria-pressed="true"]{background:var(--sky);border-color:var(--sky);color:var(--sky-ink)}
+.ihead{display:flex;align-items:center;gap:10px;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:8px 12px;margin:0 0 12px;font-weight:700}
+.ihead img{width:44px;height:44px;border-radius:10px;object-fit:cover;flex:none}
+.ihead button{margin-left:auto;border:2px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:12px;padding:6px 12px;cursor:pointer;font-weight:700;white-space:nowrap}
+.envmap{height:220px;border-radius:16px;margin:0 0 6px;border:3px solid var(--line);z-index:1}
+.envcap{font-size:.92rem;color:var(--muted);margin:0 0 14px}
+.todo-banner{background:var(--surface);border:2px dashed var(--sky);border-radius:16px;padding:12px 14px;margin:0 0 14px;font-weight:500}
+.todo-banner .lnk,.item .lnk{background:none;border:0;color:var(--sky);text-decoration:underline;cursor:pointer;font:inherit;font-weight:700;padding:0 2px}
+.mode-note{display:flex;gap:10px;align-items:center;background:var(--surface2);border-radius:14px;padding:10px 14px;margin:0 0 16px;font-weight:500}
+.mode-note .e{font-size:1.6rem}
+.modebar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 auto 14px}
+.modebar button{border:3px solid var(--line);background:var(--surface);color:var(--ink);border-radius:18px;padding:10px 8px;cursor:pointer;font-family:var(--display);font-size:1.15rem;line-height:1.25;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.modebar button small{font-family:var(--body);font-size:.8rem;color:var(--muted);font-weight:500}
+.modebar button[aria-pressed="true"]{border-color:var(--sky);background:var(--sky);color:var(--sky-ink)}
+.modebar button[aria-pressed="true"] small{color:inherit;opacity:.9}
+.pickcount{font-weight:700;color:var(--sky);margin:10px 0 0;min-height:1.4em}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <h1 class="brand"><span aria-hidden="true">🌧️</span> 빗물받이 탐험대 <span class="cnt"><span id="demoBadge"></span><span id="groupBadge"></span> <span id="sync">불러오는 중…</span></span></h1>
+    <nav class="tabs" role="tablist" aria-label="화면">
+      <button class="tab" role="tab" aria-selected="true" data-view="survey"><span class="ic" aria-hidden="true">📸</span>조사하기</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="map"><span class="ic" aria-hidden="true">🗺️</span>지도</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="results"><span class="ic" aria-hidden="true">📊</span>결과</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section id="view-survey" class="narrow" aria-label="조사하기">
+    <div class="editbar hide" id="editBar"><span aria-hidden="true">✏️</span><span id="editText"></span><button type="button" id="editCancel">그만 고치기</button></div>
+    <div class="progress" id="progress" aria-hidden="true"></div>
+
+    <div class="card step" data-step="0">
+      <div class="resume hide" id="resumeBox">
+        <p>📝 아까 하던 조사가 남아 있어요. 이어서 할까요?</p>
+        <div class="row"><button type="button" class="go" id="resumeGo">이어서 하기</button><button type="button" class="no" id="resumeNo">새로 하기</button></div>
+      </div>
+      <h2 class="q">출발 전에 약속해요!</h2>
+      <p class="sub">안전하게 조사해야 진짜 탐험대예요.</p>
+      <ul class="promise">
+        <li><span class="e" aria-hidden="true">🚸</span>인도로만 다니고 찻길로 내려가지 않아요. 찻길 쪽 빗물받이는 인도에서 찍어요.</li>
+        <li><span class="e" aria-hidden="true">🚦</span>길을 건널 때는 횡단보도에서 초록불에만 건너요.</li>
+        <li><span class="e" aria-hidden="true">👀</span>선생님·어른과 함께 다니고, 모둠 친구와 떨어지지 않아요.</li>
+        <li><span class="e" aria-hidden="true">✋</span>빗물받이 뚜껑이나 쓰레기는 맨손으로 만지지 않아요.</li>
+        <li><span class="e" aria-hidden="true">🙈</span>사람 얼굴, 자동차 번호판, 집 안은 찍지 않아요.</li>
+        <li><span class="e" aria-hidden="true">🚗</span>골목에서 나오는 차와 공사장을 조심하고, 공사장 울타리 안에는 들어가지 않아요.</li>
+        <li><span class="e" aria-hidden="true">🏪</span>가게 앞에서는 손님과 지나가는 사람을 막지 않게 비켜서 찍어요.</li>
+      </ul>
+      <div class="mode-note"><span class="e" aria-hidden="true">📸🔍</span><span>빗물받이를 <b>찍고</b>, 그 자리에서 <b>위치 → 막힌 정도 → 쓰레기 → 주변</b>까지 한 번에 기록해요.</span></div>
+      <h3 class="sec-h">오늘은 어디를 조사해요?</h3>
+      <div class="tiles phase" id="phaseTiles" style="margin-bottom:18px"></div>
+      <h3 class="sec-h">우리는 몇 모둠이에요?</h3>
+      <div class="tiles" id="groupTiles" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px"></div>
+      <div class="say" id="groupSay"></div>
+      <button type="button" class="big sun" id="promiseBtn">약속할게요! 👍</button>
+    </div>
+
+    <div class="card step hide" data-step="1">
+      <h2 class="q">빗물받이를 찍어요</h2>
+      <p class="sub">빗물받이 바로 위에서, 뚜껑이 화면에 꽉 차게 찍어요.</p>
+      <label class="big sun" for="camInput"><span aria-hidden="true">📷</span> 사진 찍기</label>
+      <input class="visually-hidden" type="file" id="camInput" accept="image/*" capture="environment">
+      <div id="shot"></div>
+      <button type="button" class="check hide" id="privacyCheck" aria-pressed="false"><span class="box" aria-hidden="true"></span><span>사진에 사람 얼굴이나 자동차 번호판이 없어요</span></button>
+      <div class="say" id="photoSay"></div>
+      <button type="button" class="link" id="albumLink">사진첩에서 고를래요</button>
+      <input class="visually-hidden" type="file" id="fileInput" accept="image/*">
+    </div>
+
+    <div class="card step hide" data-step="2">
+      <h2 class="q">여기가 어디예요?</h2>
+      <p class="sub">지도에서 빗물받이가 있는 곳을 톡 눌러 📍를 꽂아요. 📍를 끌어서 옮길 수도 있어요.</p>
+      <button type="button" class="big sky" id="locBtn"><span aria-hidden="true">🎯</span> 내 위치 찾기</button>
+      <div id="pickMap" class="pickmap" aria-label="위치를 고르는 지도"></div>
+      <div class="where hide" id="whereBox"><span class="e" aria-hidden="true">✅</span><span id="whereText"></span></div>
+      <div class="warn hide" id="dupWarn" role="status"></div>
+      <div class="say" id="locSay"></div>
+      <div class="field">
+        <label for="placeInput">어디인지 짧게 적어요 (안 적어도 돼요)</label>
+        <input type="text" id="placeInput" maxlength="60" placeholder="예: ○○마트 앞 버스정류장 옆">
+      </div>
+    </div>
+
+    <div class="card step hide" data-step="3">
+      <h2 class="q">얼마나 막혀 있나요?</h2>
+      <p class="sub">쓰레기나 낙엽·흙이 구멍을 막고 있는 칸을 톡 눌러요. 다시 누르면 지워져요. 막힌 곳이 없으면 그냥 다음을 눌러요.</p>
+      <div id="gridArea"></div>
+      <div class="face" id="faceBox" aria-live="polite"></div>
+    </div>
+
+    <div class="card step hide" data-step="4">
+      <h2 class="q">무엇이 있었나요?</h2>
+      <p class="sub">보이는 것을 모두 눌러요.</p>
+      <div class="tiles four" id="typeTiles"></div>
+      <div class="field hide" id="otherWrap">
+        <label for="otherInput">❓ 기타는 무엇이었나요?</label>
+        <input type="text" id="otherInput" maxlength="40" placeholder="예: 마스크">
+      </div>
+      <div class="mini hide" id="buttWrap">
+        <h3>🚬 담배꽁초를 세어 볼까요?</h3>
+        <div class="stepper">
+          <button type="button" id="buttMinus" aria-label="하나 빼기">−</button>
+          <output id="buttOut" aria-live="polite">0</output>
+          <button type="button" id="buttPlus" aria-label="하나 더하기">+</button>
+          <span style="color:var(--muted)">개</span>
+        </div>
+      </div>
+      <div class="mini">
+        <h3>빗물받이가 고무판이나 비닐로 덮여 있었나요?</h3>
+        <div class="yn" id="lidTiles">
+          <button type="button" class="tile" data-v="yes" aria-pressed="false"><span class="e" aria-hidden="true">🙅</span><span class="l">네, 덮여 있었어요</span></button>
+          <button type="button" class="tile" data-v="no" aria-pressed="false"><span class="e" aria-hidden="true">🙆</span><span class="l">아니요</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card step hide" data-step="5">
+      <h2 class="q">주변은 어떤 곳이에요?</h2>
+      <p class="sub">사진 속 빗물받이 주변을 떠올리고, 아래 지도도 살펴본 다음 <b>해당하는 곳을 모두</b> 골라요. 여러 개 골라도 돼요.</p>
+      <div id="envMap" class="envmap" aria-label="빗물받이 주변 지도"></div>
+      <p class="envcap">📍가 이 빗물받이 자리예요. 주변에 가게, 버스정류장, 큰길, 공원이 있는지 사진과 지도를 함께 살펴봐요.</p>
+      <div class="tiles three" id="envTiles"></div>
+      <p class="pickcount" id="envCount" aria-live="polite"></p>
+      <div class="field">
+        <label for="memoInput">👀 더 본 것이 있나요? (안 적어도 돼요)</label>
+        <textarea id="memoInput" maxlength="300" placeholder="예: 냄새가 났어요, 물이 고여 있었어요, 바로 옆에 쓰레기통이 없었어요"></textarea>
+      </div>
+    </div>
+
+    <div class="card step hide" data-step="6">
+      <h2 class="q">왜 이렇게 되었을까? <small style="font-size:.6em;color:var(--muted)">(건너뛰어도 돼요)</small></h2>
+      <p class="sub">막힌 원인은 <b>한 가지가 아닐 수도</b> 있어요. 내 생각과 맞는 것을 <b>모두</b> 골라요.</p>
+      <p class="tip">💡 <b>본 것</b>(사실)과 <b>내 생각</b>(추측)은 달라요. 아래 칸에는 그렇게 생각한 까닭이 되는 <b>본 것</b>을 적어요.</p>
+      <div class="tiles four" id="reasonTiles"></div>
+      <p class="pickcount" id="reasonCount" aria-live="polite"></p>
+      <div class="field">
+        <label for="whyInput">🔎 그렇게 생각한 까닭은? (내가 본 것)</label>
+        <textarea id="whyInput" maxlength="200" placeholder="예: 빗물받이 바로 옆에 큰 나무가 있고 낙엽이 많이 쌓여 있었어요"></textarea>
+      </div>
+      <div class="say" id="saveSay" role="alert"></div>
+    </div>
+
+    <div class="card step hide done" data-step="7">
+      <div class="e" aria-hidden="true" id="doneEmoji">🎉</div>
+      <h2 class="q" id="doneTitle">조사 완료!</h2>
+      <p class="sub" id="doneText"></p>
+      <button type="button" class="big sun" id="againBtn">📷 다음 빗물받이 찍기</button>
+      <p style="margin:14px 0 0"><button type="button" class="link" id="seeMapLink">지도에서 보기</button></p>
+    </div>
+  </section>
+
+
+
+  <section id="view-map" class="hide" aria-label="지도">
+    <div class="refresh"><button type="button" class="sbtn" data-refresh>🔄 새로 보기</button></div>
+    <div class="box">
+      <div class="box-head"><h2>우리가 찾은 빗물받이</h2></div>
+      <div class="fbar" id="mapFilters"></div>
+      <div id="bigMap" aria-label="조사한 빗물받이 지도"></div>
+      <div class="legend" id="legend"></div>
+      <p class="note">동그라미를 누르면 사진을 볼 수 있어요. 숫자는 조사한 순서예요. <span id="mapCount"></span></p>
+    </div>
+  </section>
+
+  <section id="view-results" class="hide" aria-label="우리 반 결과">
+    <div class="rbar">
+      <label style="display:flex;gap:8px;align-items:center;font-weight:700">보기 <select id="resPhase" aria-label="조사 단계"></select></label>
+      <div class="r"><button type="button" class="sbtn" id="csvBtn">⬇️ 표로 내려받기(CSV)</button><button type="button" class="sbtn" data-refresh>🔄 새로 보기</button></div>
+    </div>
+    <div id="resultsBody"></div>
+    <details class="teacher" id="teacherBox">
+      <summary>👩‍🏫 선생님 메뉴</summary>
+      <div id="teacherIn"></div>
+      <details class="changes">
+        <summary>🆕 기존 버전과 달라진 점 (수정 시안)</summary>
+        <p class="small">각 항목의 [ ]는 관련 차시예요. 기존 버전: ysuhj.github.io/gogoschoolseoul</p>
+        <ol class="clist">
+          <li><b>밖에서 한 번에 기록하기</b> <span class="cx">[4~5, 9~10차시]</span><br><span class="was">기존: 밖에서 사진만 찍고, 교실에서 다시 살펴보기</span><br>변경: 사진 → 위치 → 막힌 정도 → 쓰레기 → 주변(여러 개) → 원인(여러 개, 건너뛰기 가능) 순서로 그 자리에서 한 번에 기록해요.</li>
+          <li><b>기록 고치기·지우기</b> <span class="cx">[4~5, 9~10차시 활동2]</span><br><span class="was">기존: 저장만 되고 고칠 수 없음</span><br>변경: 기록을 눌러 ✏️ 고치기 / 🗑️ 지우기. 만든 기기(모둠)와 선생님만 할 수 있어요. 지운 기록은 시트에 남아 되살릴 수 있어요.</li>
+          <li><b>막힘 상태 3단계로 통일</b> <span class="cx">[2~3, 4~5차시]</span><br><span class="was">기존: 깨끗해요·조금 있어요·많이 쌓였어요·꽉 막혔어요 (4단계)</span><br>변경: 😀 원활해요 · 😟 일부 막혔어요 · 😱 많이 막혔어요. 과정안의 '원활함/일부 막힘/많이 막힘'과 같은 말이에요. 기준(색칠 25%·55%)은 설정에서 바꿀 수 있어요.</li>
+          <li><b>조사 단계 구분</b> <span class="cx">[4~5, 9~10, 11~12차시]</span><br><span class="was">기존: 교내·학교 주변·가족 과제 자료가 한 지도에 섞임</span><br>변경: 우리 동네(북가좌동) 조사용으로 정리해, 출발 전에 🏘️ 우리 동네 / ✏️ 연습 중 하나를 골라요. 연습 기록은 결과에서 빠지고 선생님 메뉴에서 한 번에 지울 수 있어요.</li>
+          <li><b>연습 모드</b> <span class="cx">[2~3차시 활동3]</span><br><span class="was">기존: 예시 입력도 실제 자료에 섞임</span><br>변경: '✏️ 연습' 기록은 결과에서 빠지고, 선생님이 한 번에 지울 수 있어요.</li>
+          <li><b>4학년 새싹반 전용</b> <span class="cx">[전 차시]</span><br><span class="was">기존: 모든 반이 한 자료를 함께 씀, 모둠 3개 고정</span><br>변경: 기록은 4학년 새싹반 자료로만 모여요. 모둠 수는 6개이고, 주소 끝에 <code>?groups=4</code>처럼 붙여 바꿀 수 있어요.</li>
+          <li><b>원인 추론 단계 추가</b> <span class="cx">[1, 6~7, 11~12차시]</span><br><span class="was">기존: 메모 칸만 있음</span><br>변경: '왜 이렇게 되었을까?' 단계에서 생각한 원인을 고르고, 그렇게 생각한 까닭(본 것)을 적어요. 사실과 추측을 나누어 기록하는 연습이 되고, 결과 화면에서 원인별로 모아 볼 수 있어요.</li>
+          <li><b>CSV 내려받기</b> <span class="cx">[6~7차시 4수05-03, 14~15차시]</span><br><span class="was">기존: 앱이 만든 그래프만 볼 수 있음</span><br>변경: 결과 화면에서 원자료를 표(CSV)로 받아 학생이 직접 표·그래프를 만들 수 있어요. 엑셀에서 한글이 깨지지 않아요.</li>
+          <li><b>지도 필터와 색 숨기기</b> <span class="cx">[6~7, 11~12차시]</span><br><span class="was">기존: 모둠·쓰레기 종류 필터만 있음, 색과 범례가 정해져 있음</span><br>변경: 단계·모둠·상태·주변·쓰레기로 거를 수 있어요. '🎨 색 숨기기'를 누르면 학생이 직접 색·기호와 범례를 정하는 활동을 할 수 있어요.</li>
+          <li><b>가장 많이 막힌 곳 TOP 3</b> <span class="cx">[11~12차시 활동2]</span><br>변경: 결과 화면에서 핫스팟 분석을 시작할 장소를 바로 보여 줘요.</li>
+          <li><b>자료 점검과 중복 알림</b> <span class="cx">[4~5, 9~10차시 활동2]</span><br><span class="was">기존: 점검 기능 없음</span><br>변경: 5m 안에 같은 단계의 기록이 있으면 위치를 고를 때 미리 알려 줘요. 결과 화면 '🔍 우리 자료 점검하기'에서 중복 의심, 주변 환경 빠짐, 원인 빠짐, 사진 없음을 모아 보여 줘요.</li>
+          <li><b>개인정보 확인</b> <span class="cx">[2~3, 4~5차시]</span><br><span class="was">기존: 촬영 화면에 안내 없음</span><br>변경: 약속에 '얼굴·번호판 찍지 않기'를 더했고, 사진마다 '얼굴·번호판이 없어요'를 눌러야 다음으로 넘어가요.</li>
+          <li><b>인터넷이 끊겨도 기록 보관</b> <span class="cx">[9~10차시 현장 조사]</span><br><span class="was">기존: 저장 실패 시 다시 눌러야 하고, 새로고침하면 입력이 사라짐</span><br>변경: 작성 중인 내용은 자동으로 임시 저장되고, 저장할 때 인터넷이 안 되면 기기에 보관했다가 연결되면 저절로 보내요.</li>
+          <li><b>번호 고정</b><br><span class="was">기존: 기록이 지워지면 뒤 번호가 당겨짐</span><br>변경: 저장할 때 받은 번호가 바뀌지 않아서, 토의 중에 '3번 빗물받이'라고 말해도 헷갈리지 않아요.</li>
+          <li><b>주변 환경 꼭 고르기</b> <span class="cx">[6~7, 11~12차시]</span><br><span class="was">기존: 고르지 않아도 저장됨</span><br>변경: 환경별 분석에 꼭 필요해서 하나를 골라야 넘어가요.</li>
+        </ol>
+        <p class="small">⚠️ 이 앱은 새 저장소(Code.gs)를 써야 해요. 기존 저장소 자료는 옮겨지지 않아요.</p>
+      </details>
+    </details>
+  </section>
+</main>
+
+<div class="wnav hide" id="wnav">
+  <div class="wnav-in">
+    <button type="button" class="big back" id="prevBtn">◀ 이전</button>
+    <button type="button" class="big sky" id="nextBtn">다음 ▶</button>
+  </div>
+</div>
+
+<dialog id="detail" aria-labelledby="dlgTitle"><div class="dlg" id="dlgBody"></div></dialog>
+
+<script>
+(() => {
+  "use strict";
+  /* ===== 선생님이 바꿀 수 있는 설정 ===== */
+  // 새 Code.gs를 배포한 뒤 그 웹 앱 URL(끝이 /exec)을 넣어야 해요.
+  const API_URL = "https://script.google.com/macros/s/AKfycbyDQyvVTxvQAgvWZJPoN9ebddUrbR-71KK2zVqEeZkSVGpbR9yGLrKFvAzsTqGT2aWQ/exec";
+  const DEFAULT_CENTER = [37.578689, 126.907504]; // 처음 지도를 열 때 보여줄 곳: 북가좌동 (서울북가좌초등학교)
+  const CLASS_ID = "4-새싹";                  // 시트에 저장되는 반 이름 (바꾸면 기록이 따로 모여요)
+  const CLASS_LABEL = "4학년 새싹반";          // 화면에 보이는 반 이름
+  const GROUP_COUNT = 6;                      // 모둠 수 (주소에 &groups=4 처럼 붙여도 돼요, 최대 8)
+  const GRADE_CUT = [25, 55];                 // 색칠 비율(%) 기준: 25% 미만 원활 / 55% 미만 일부 막힘 / 그 이상 많이 막힘
+  const DUP_METERS = 5;                       // 이 거리 안에 같은 단계 기록이 있으면 '같은 빗물받이일 수 있어요' 안내
+  /* ===================================== */
+
+  const $ = (s, r = document) => r.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const qs = new URLSearchParams(location.search);
+  const CLS = CLASS_ID; // 반을 4학년 새싹반으로 고정
+  const GROUP_EMOJI = ["🐬","🦊","🐢","🦁","🐼","🐸","🦉","🐝"];
+  const nGroups = Math.max(1, Math.min(8, parseInt(qs.get("groups"), 10) || GROUP_COUNT));
+  const GROUPS = GROUP_EMOJI.slice(0, nGroups).map((e, i) => [(i + 1) + "모둠", e]);
+  const PHASES = [["near","🏘️","우리 동네 (북가좌동)"],["practice","✏️","연습"]];        // 출발 전에 고르는 조사 장소
+  const PHASES_ALL = [...PHASES, ["school","🏫","학교 안"]];                          // 예전 '학교 안' 기록도 이름이 보이게
+  const P = Object.fromEntries(PHASES_ALL.map(([k,e,l]) => [k,{e,l}]));
+  const TYPES = [["butt","🚬","담배꽁초"],["leaf","🍂","낙엽·나뭇가지"],["vinyl","🛍️","비닐·과자봉지"],["plastic","🥤","컵·캔·병"],["paper","📄","종이·전단지"],["soil","🟫","흙·모래"],["food","🍙","음식물"],["debris","🧱","공사 자재·시멘트 조각"],["etc","❓","기타"]];
+  const T = Object.fromEntries(TYPES.map(([k,e,l]) => [k,{e,l}]));
+  const ENVS = [["shop","🏪","가게·식당 앞"],["house","🏠","주택가 골목"],["road","🚗","큰 찻길 옆"],["bus","🚌","버스정류장 근처"],["station","🚉","역 근처"],["build","🏗️","공사장 옆"],["park","🌳","공원·나무 옆"],["school","🏫","학교 앞"],["etc","📍","그 밖의 곳"]];
+  const ENVS_OLD = [["garden","🌳","화단·나무 옆"],["door","🚪","건물 입구 옆"],["path","🚶","학생들이 다니는 길"],["gate","🏫","교문 근처"]]; // 예전 '학교 안' 기록용
+  const E = Object.fromEntries([...ENVS, ...ENVS_OLD].map(([k,e,l]) => [k,{e,l}]));
+  const REASONS = [["tree","🌳","나무·화단이 가까워서"],["people","🚶","사람이 많이 다녀서"],["shop","🏪","가게·식당이 가까워서"],["smoke","🚬","담배 피우는 사람이 많아서"],["build","🏗️","공사장 흙·먼지가 쓸려 와서"],["bin","🗑️","쓰레기통이 없어서"],["slope","⛰️","비탈이라 흙·물이 모여서"],["cover","🙅","덮개로 덮여 있어서"],["unknown","🤔","잘 모르겠어요"],["etc","✏️","다른 생각"]];
+  const R = Object.fromEntries(REASONS.map(([k,e,l]) => [k,{e,l}]));
+  // 상태 3단계 — 과정안(원활함 / 일부 막힘 / 많이 막힘)과 같은 말로 통일
+  const GR = [{e:"😀",l:"원활해요",c:"g0"},{e:"😟",l:"일부 막혔어요",c:"g2"},{e:"😱",l:"많이 막혔어요",c:"g3"}];
+  const gradeOf = c => c < GRADE_CUT[0] ? 0 : c < GRADE_CUT[1] ? 1 : 2;
+  const gOf = r => gradeOf(+r.coverage || 0); // 예전 4단계 기록도 비율로 다시 계산
+  // 교실에서 살펴보기를 마쳤는지 (예전 기록은 주변 환경이 있으면 마친 것으로 봐요)
+  const isDone = r => r.done === true || (r.done == null && !!r.env);
+  // 주변 환경은 여러 개를 쉼표로 이어 저장해요 (예: "build,path")
+  const envList = r => String((r && r.env) || "").split(",").map(x => x.trim()).filter(k => E[k]);
+  const envText = r => envList(r).map(k => E[k].e + " " + E[k].l).join(", ");
+  const DETAIL_KEYS = ["cells","coverage","types","other","butts","lidBlocked","env","memo","reasons","why"];
+  const detailPart = r => Object.fromEntries(DETAIL_KEYS.filter(k => r[k] !== undefined).map(k => [k, r[k]]));
+  const COLS = 4, ROWS = 3;
+  const groupEmoji = t => (GROUPS.find(g => g[0] === t) || [,"👥"])[1];
+
+  const store = {
+    get(k){ try { return localStorage.getItem(k); } catch { return null; } },
+    set(k,v){ try { localStorage.setItem(k,v); return true; } catch { return false; } },
+    del(k){ try { localStorage.removeItem(k); } catch {} }
+  };
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  let owner = store.get("drain-owner"); if (!owner) { owner = uid() + uid(); store.set("drain-owner", owner); } // 이 기기 표시(이름 아님)
+
+  /* ---------- 저장소: 구글 Apps Script ---------- */
+  const hasGAS = /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(API_URL.trim());
+  let teacherPin = "";
+  async function api(action, extra = {}) {
+    const body = { action, cls: CLS, owner, pin: teacherPin || undefined, ...extra };
+    if (!hasGAS) { const e = new Error("저장소 주소(API_URL)가 설정되지 않았어요. 선생님께 알려 주세요."); e.server = true; throw e; }
+    let res;
+    const opt = { credentials: "omit", redirect: "follow" };
+    if (action === "list" || action === "photo") res = await fetch(API_URL.trim() + "?" + new URLSearchParams({ action, cls: CLS, owner, ...(extra.id ? { id: extra.id } : {}) }), opt);
+    else res = await fetch(API_URL.trim(), { ...opt, method: "POST", body: JSON.stringify(body) }); // text/plain → 추가 확인 요청 없음
+    const j = await res.json();
+    if (!j.ok) { const e = new Error(j.error || "요청 실패"); e.server = true; throw e; }
+    return j;
+  }
+  /* ---------- 상태 ---------- */
+  const state = { reports:new Map(), photoCache:new Map(), view:"survey", step:0, loaded:false, editId:null, teacher:false,
+    f:{ phase:"real", team:"all", grade:"all", env:"all", type:"all" }, hideColor:false };
+  let team = store.get("drain-group") || "";
+  if (team && !GROUPS.some(g => g[0] === team)) team = "";
+  const okPhase = k => PHASES.some(p => p[0] === k) ? k : "near";
+  let phase = okPhase(store.get("drain-phase"));
+  const newDraft = () => ({ photo:null, thumb:null, photoChanged:false, privacyOk:false, cells:new Set(), types:new Set(), butts:0, buttsTouched:false, lid:null, lat:null, lng:null, src:"", envs:new Set(), reasons:new Set() });
+  let draft = newDraft();
+  const LAST_STEP = 6, DONE = 7;
+
+  /* ---------- tabs ---------- */
+  document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => showView(t.dataset.view)));
+  function showView(v) {
+    state.view = v;
+    document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.view === v)));
+    ["survey","map","results"].forEach(n => $("#view-" + n).classList.toggle("hide", n !== v));
+    updateNav();
+    if (v === "map") { renderMap(true); load(); }
+    if (v === "results") { renderResults(); load(); }
+    if (v === "survey" && state.step === 2 && pick.map) setTimeout(() => pick.map.invalidateSize(), 50);
+    window.scrollTo({top:0});
+  }
+  document.querySelectorAll("[data-refresh]").forEach(b => b.onclick = () => load());
+
+  /* ---------- wizard ---------- */
+  function goStep(n) {
+    state.step = n;
+    document.querySelectorAll(".step").forEach(s => s.classList.toggle("hide", +s.dataset.step !== n));
+    $("#progress").innerHTML = n >= 1 && n <= LAST_STEP ? Array.from({length:LAST_STEP}, (_, i) => `<i class="${i < n ? "on" : ""}"></i>`).join("") : "";
+    $("#editBar").classList.toggle("hide", !state.editId || n === DONE);
+    if (state.editId) $("#editText").textContent = `${numOf(state.editId)}번 기록을 고치는 중이에요`;
+    updateNav();
+    if (n === 1) renderPrivacy();
+    if (n === 3) renderGrid();
+    if (n === 5) showEnvMap();
+    if (n === 2) { initPickMap(); if (draft.lat == null) locate(); else { placePin(); pick.map && pick.map.setView([draft.lat, draft.lng], 18); checkDup(); } }
+    saveDraftSoon();
+    window.scrollTo({top:0});
+  }
+  function updateNav() {
+    const f = state.view === "survey" && state.step >= 1 && state.step <= LAST_STEP;
+    $("#wnav").classList.toggle("hide", !f);
+    $("#prevBtn").style.visibility = state.step > 1 ? "visible" : "hidden";
+    $("#nextBtn").innerHTML = state.step === LAST_STEP ? (state.editId ? "고친 내용 저장 💾" : "저장하기 💾") : "다음 ▶";
+  }
+  function nudge(el, msg) { el.className = "say err"; el.textContent = msg; el.classList.remove("nudge"); void el.offsetWidth; el.classList.add("nudge"); }
+
+  function renderStart() {
+    $("#phaseTiles").innerHTML = PHASES.map(([k,e,l]) => `<button type="button" class="tile" data-k="${k}" aria-pressed="${phase === k}"><span class="e" aria-hidden="true">${e}</span><span class="l">${l}</span></button>`).join("");
+    $("#groupTiles").innerHTML = GROUPS.map(([n,e]) => `<button type="button" class="tile" data-k="${n}" aria-pressed="${team === n}"><span class="e" aria-hidden="true">${e}</span><span class="l">${n}</span></button>`).join("");
+    $("#groupBadge").textContent = `${CLASS_LABEL} · ` + (team ? groupEmoji(team) + " " + team + " · " : "");
+  }
+  $("#phaseTiles").onclick = ev => { const b = ev.target.closest(".tile"); if (!b) return; phase = b.dataset.k; store.set("drain-phase", phase); $("#groupSay").textContent = ""; renderStart(); };
+  $("#groupTiles").onclick = ev => { const b = ev.target.closest(".tile"); if (!b) return; team = b.dataset.k; store.set("drain-group", team); $("#groupSay").textContent = ""; renderStart(); };
+  $("#demoBadge").innerHTML = hasGAS ? "" : `<span class="badge" title="index.html의 API_URL을 확인하세요">저장소 연결 안 됨</span>`;
+  renderStart();
+  $("#promiseBtn").onclick = () => {
+    if (!phase) return nudge($("#groupSay"), "먼저 오늘 조사할 곳을 눌러요.");
+    if (!team) return nudge($("#groupSay"), "먼저 우리 모둠을 눌러요.");
+    goStep(1);
+  };
+  $("#prevBtn").onclick = () => goStep(Math.max(1, state.step - 1));
+  $("#nextBtn").onclick = () => {
+    if (state.step === 5 && !draft.envs.size) return nudge($("#envSay"), "주변이 어떤 곳인지 하나 이상 골라요.");
+    if (state.step === 1 && !draft.photo) return nudge($("#photoSay"), "먼저 📷 사진 찍기를 눌러요.");
+    if (state.step === 1 && !draft.privacyOk) return nudge($("#photoSay"), "사진에 얼굴이나 번호판이 없는지 보고, 아래 칸을 눌러 확인해요.");
+    if (state.step === 2 && draft.lat == null) return nudge($("#locSay"), "지도에서 빗물받이가 있는 곳을 눌러 📍를 꽂아요.");
+    if (state.step === LAST_STEP) return save();
+    goStep(state.step + 1);
+  };
+  $("#envTiles").insertAdjacentHTML("afterend", `<div class="say" id="envSay"></div>`);
+  $("#againBtn").onclick = () => { resetDraft(); goStep(1); };
+  $("#seeMapLink").onclick = () => showView("map");
+  $("#editCancel").onclick = () => { resetDraft(); goStep(0); };
+
+  /* ---------- tiles ---------- */
+  function tiles(el, items, isOn, toggle) {
+    el.innerHTML = items.map(([k,e,l]) => `<button type="button" class="tile" data-k="${k}" aria-pressed="${isOn(k)}"><span class="e" aria-hidden="true">${e}</span><span class="l">${l}</span></button>`).join("");
+    el.onclick = ev => { const b = ev.target.closest(".tile"); if (!b) return; toggle(b.dataset.k); refresh(el, isOn); };
+  }
+  const refresh = (el, isOn) => el.querySelectorAll(".tile").forEach(b => b.setAttribute("aria-pressed", String(isOn(b.dataset.k))));
+  const typeOn = k => draft.types.has(k), envOn = k => draft.envs.has(k), reasonOn = k => draft.reasons.has(k);
+  const syncTypeExtras = () => { $("#otherWrap").classList.toggle("hide", !draft.types.has("etc")); $("#buttWrap").classList.toggle("hide", !draft.types.has("butt")); };
+  tiles($("#typeTiles"), TYPES, typeOn, k => { draft.types.has(k) ? draft.types.delete(k) : draft.types.add(k); syncTypeExtras(); });
+  tiles($("#envTiles"), ENVS, envOn, k => { draft.envs.has(k) ? draft.envs.delete(k) : draft.envs.add(k); $("#envSay").textContent = ""; syncCounts(); });
+  tiles($("#reasonTiles"), REASONS, reasonOn, k => { draft.reasons.has(k) ? draft.reasons.delete(k) : draft.reasons.add(k); syncCounts(); });
+  function syncCounts() {
+    $("#envCount").textContent = draft.envs.size ? `✔ ${draft.envs.size}곳 골랐어요` : "";
+    $("#reasonCount").textContent = draft.reasons.size ? `✔ 원인 ${draft.reasons.size}가지를 골랐어요` : "";
+  }
+  const syncLid = () => $("#lidTiles").querySelectorAll(".tile").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === draft.lid)));
+  $("#lidTiles").onclick = ev => { const b = ev.target.closest(".tile"); if (!b) return; draft.lid = draft.lid === b.dataset.v ? null : b.dataset.v; syncLid(); };
+  const setButts = n => { draft.butts = Math.max(0, Math.min(999, n)); draft.buttsTouched = true; $("#buttOut").textContent = draft.butts; };
+  $("#buttMinus").onclick = () => setButts(draft.butts - 1);
+  $("#buttPlus").onclick = () => setButts(draft.butts + 1);
+
+  /* ---------- photo ---------- */
+  $("#albumLink").onclick = () => $("#fileInput").click();
+  $("#camInput").addEventListener("change", e => handleFile(e.target.files[0], e.target));
+  $("#fileInput").addEventListener("change", e => handleFile(e.target.files[0], e.target));
+  function renderPrivacy() {
+    $("#shot").innerHTML = draft.photo ? `<div class="shot"><img src="${draft.photo}" alt="찍은 빗물받이 사진"></div>` : "";
+    $("#privacyCheck").classList.toggle("hide", !draft.photo);
+    $("#privacyCheck").setAttribute("aria-pressed", String(draft.privacyOk));
+  }
+  $("#privacyCheck").onclick = () => { draft.privacyOk = !draft.privacyOk; renderPrivacy(); if (draft.privacyOk) { $("#photoSay").className = "say"; $("#photoSay").textContent = "좋아요! 다음 ▶을 눌러요."; } };
+  async function handleFile(file, input) {
+    if (!file) return;
+    const say = $("#photoSay"); say.className = "say"; say.textContent = "사진을 준비하고 있어요…";
+    let gps = null; try { gps = readExifGps(await file.arrayBuffer()); } catch {}
+    try {
+      const img = await decodeImage(file, say);
+      draft.photo = compress(img, 1024, 180000);
+      draft.thumb = compress(img, 200, 14000);
+      draft.photoChanged = true; draft.privacyOk = false;
+      draft.cells = new Set();
+      renderPrivacy();
+      say.textContent = "잘 찍었어요! 사람 얼굴이나 번호판이 없는지 보고 아래 칸을 눌러요.";
+      if (gps && draft.lat == null) setLoc(gps.lat, gps.lng, "사진");
+      saveDraftSoon();
+    } catch (e) {
+      nudge(say, e && e.message === "empty" ? "사진이 제대로 저장되지 않았어요. 📷 사진 찍기를 한 번 더 눌러요."
+        : e && e.message === "heic" ? "이 사진 형식(HEIC)을 바꾸지 못했어요. 인터넷 연결을 확인하거나, 카메라 설정에서 '고효율 사진'을 끄고 다시 찍어요."
+        : "사진을 열 수 없어요. 📷 사진 찍기로 다시 찍어 볼까요?");
+    }
+    input.value = "";
+  }
+  // 갤럭시 '고효율 사진'·아이폰 사진(HEIC)은 크롬이 바로 못 열어서, 필요할 때만 변환 도구를 불러와 JPG로 바꿔요
+  async function isHeic(file) {
+    if (/hei[cf]/i.test(file.type || "") || /\.hei[cf]$/i.test(file.name || "")) return true;
+    try { const h = new Uint8Array(await file.slice(4, 12).arrayBuffer()); return /^ftyp(heic|heix|hevc|hevx|heim|heis|mif1|msf1)/.test(String.fromCharCode(...h)); } catch { return false; }
+  }
+  let heicLib = null;
+  function loadHeicLib() {
+    if (window.heic2any) return Promise.resolve();
+    if (!heicLib) heicLib = new Promise((res, rej) => {
+      const sc = document.createElement("script");
+      sc.src = "https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js";
+      sc.onload = res; sc.onerror = () => { heicLib = null; rej(new Error("heic")); };
+      document.head.appendChild(sc);
+    });
+    return heicLib;
+  }
+  async function decodeImage(file, say) {
+    if (!file.size) throw new Error("empty");
+    try { return await loadImage(file); } catch {}
+    if (await isHeic(file)) {
+      say.textContent = "사진 형식을 바꾸는 중이에요… 조금만 기다려요 ⏳";
+      try {
+        await loadHeicLib();
+        const out = await window.heic2any({ blob: file, toType: "image/jpeg", quality: 0.85 });
+        return await loadImage(Array.isArray(out) ? out[0] : out);
+      } catch { throw new Error("heic"); }
+    }
+    // 마지막 방법: 브라우저의 다른 해석기로 한 번 더 시도
+    if (window.createImageBitmap) {
+      const bmp = await createImageBitmap(file);
+      const c = document.createElement("canvas"); c.width = bmp.width; c.height = bmp.height; c.getContext("2d").drawImage(bmp, 0, 0);
+      return await loadImage(await new Promise(r => c.toBlob(r, "image/jpeg", 0.9)));
+    }
+    throw new Error("decode");
+  }
+  function loadImage(file) {
+    return new Promise((res, rej) => { const u = URL.createObjectURL(file), im = new Image();
+      im.onload = () => { res(im); URL.revokeObjectURL(u); }; im.onerror = () => { rej(); URL.revokeObjectURL(u); }; im.src = u; });
+  }
+  function compress(img, max, limit) {
+    let s = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight)), q = .72, out = "";
+    for (let i = 0; i < 10; i++) {
+      const c = document.createElement("canvas");
+      c.width = Math.max(1, Math.round(img.naturalWidth * s)); c.height = Math.max(1, Math.round(img.naturalHeight * s));
+      const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0,0,c.width,c.height); x.drawImage(img,0,0,c.width,c.height);
+      out = c.toDataURL("image/jpeg", q);
+      if (out.length <= limit) return out;
+      if (q > .45) q -= .1; else s *= .8;
+    }
+    return out;
+  }
+  function readExifGps(buf) {
+    const v = new DataView(buf);
+    if (v.byteLength < 4 || v.getUint16(0) !== 0xFFD8) return null;
+    let off = 2;
+    while (off + 4 < v.byteLength) {
+      const mk = v.getUint16(off); off += 2;
+      if ((mk & 0xFF00) !== 0xFF00) break;
+      const len = v.getUint16(off);
+      if (mk === 0xFFE1 && v.getUint32(off + 2) === 0x45786966) {
+        const tf = off + 8, le = v.getUint16(tf) === 0x4949, g16 = o => v.getUint16(o, le), g32 = o => v.getUint32(o, le);
+        const i0 = tf + g32(tf + 4), n = g16(i0); let gp = null;
+        for (let i = 0; i < n; i++) { const e = i0 + 2 + i*12; if (g16(e) === 0x8825) gp = tf + g32(e + 8); }
+        if (gp == null) return null;
+        const m = g16(gp), t = {};
+        for (let i = 0; i < m; i++) {
+          const e = gp + 2 + i*12, tag = g16(e), ty = g16(e + 2);
+          if (tag === 1 || tag === 3) t[tag] = String.fromCharCode(v.getUint8(e + 8));
+          if ((tag === 2 || tag === 4) && ty === 5) { const vo = tf + g32(e + 8), r = k => { const d = g32(vo + k*8 + 4); return d ? g32(vo + k*8) / d : 0; }; t[tag] = r(0) + r(1)/60 + r(2)/3600; }
+        }
+        if (!t[2] || !t[4]) return null;
+        return { lat: t[1] === "S" ? -t[2] : t[2], lng: t[3] === "W" ? -t[4] : t[4] };
+      }
+      off += len;
+    }
+    return null;
+  }
+
+  /* ---------- grid ---------- */
+  function renderGrid() {
+    const area = $("#gridArea");
+    if (!draft.photo) { area.innerHTML = `<div class="empty">먼저 사진을 찍어요.</div>`; renderFace(); return; }
+    let cells = "";
+    for (let i = 0; i < COLS*ROWS; i++) cells += `<div class="cell${draft.cells.has(i) ? " on" : ""}" data-i="${i}" role="checkbox" tabindex="0" aria-checked="${draft.cells.has(i)}" aria-label="${i+1}번 칸"></div>`;
+    area.innerHTML = `<div class="grate-wrap"><img src="${draft.photo}" alt="찍은 빗물받이 사진"><div class="grate" style="grid-template-columns:repeat(${COLS},1fr);grid-template-rows:repeat(${ROWS},1fr)">${cells}</div></div>`;
+    const grid = area.querySelector(".grate"); let paint = null;
+    const set = (el, on) => { const i = +el.dataset.i; on ? draft.cells.add(i) : draft.cells.delete(i); el.classList.toggle("on", on); el.setAttribute("aria-checked", String(on)); };
+    grid.addEventListener("pointerdown", e => { const c = e.target.closest(".cell"); if (!c) return; e.preventDefault(); paint = !draft.cells.has(+c.dataset.i); set(c, paint); renderFace(); try { grid.setPointerCapture(e.pointerId); } catch {} });
+    grid.addEventListener("pointermove", e => { if (paint === null) return; const el = document.elementFromPoint(e.clientX, e.clientY); if (el && el.classList.contains("cell") && grid.contains(el) && draft.cells.has(+el.dataset.i) !== paint) { set(el, paint); renderFace(); } });
+    const end = () => { if (paint !== null) saveDraftSoon(); paint = null; }; grid.addEventListener("pointerup", end); grid.addEventListener("pointercancel", end);
+    grid.addEventListener("keydown", e => { const c = e.target.closest(".cell"); if (!c || (e.key !== " " && e.key !== "Enter")) return; e.preventDefault(); set(c, !draft.cells.has(+c.dataset.i)); renderFace(); });
+    renderFace();
+  }
+  const coverage = () => Math.round(draft.cells.size / (COLS*ROWS) * 100);
+  function renderFace() {
+    const g = GR[gradeOf(coverage())];
+    $("#faceBox").innerHTML = `<span class="e" aria-hidden="true">${g.e}</span><span><span class="t">${g.l}</span><br><span class="n">12칸 중 ${draft.cells.size}칸 (${coverage()}%)</span></span>`;
+  }
+
+  /* ---------- maps ---------- */
+  const TILE_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+  const TILE_OPT = { maxZoom: 19, attribution: "&copy; OpenStreetMap" };
+  const pinIcon = (cls, label) => L.divIcon({ className: "", html: `<div class="pin ${cls}">${label}</div>`, iconSize: [36,36], iconAnchor: [18,18] });
+  const pick = { map:null, marker:null };
+  function initPickMap() {
+    if (typeof L === "undefined") { nudge($("#locSay"), "지도를 불러오지 못했어요. 인터넷 연결을 확인해요."); return; }
+    if (pick.map) { setTimeout(() => pick.map.invalidateSize(), 50); return; }
+    const last = (store.get("drain-last") || "").split(",").map(Number);
+    const center = draft.lat != null ? [draft.lat, draft.lng] : (last.length === 2 && last.every(Number.isFinite) ? last : DEFAULT_CENTER);
+    pick.map = L.map("pickMap", { zoomControl: true }).setView(center, 17);
+    L.tileLayer(TILE_URL, TILE_OPT).addTo(pick.map);
+    pick.map.on("click", e => setLoc(e.latlng.lat, e.latlng.lng, "지도"));
+    if (draft.lat != null) placePin();
+    setTimeout(() => pick.map.invalidateSize(), 50);
+  }
+  function placePin() {
+    if (!pick.map || draft.lat == null) return;
+    const ll = [draft.lat, draft.lng];
+    if (!pick.marker) {
+      pick.marker = L.marker(ll, { draggable: true, icon: L.divIcon({ className:"", html:`<div style="font-size:38px;line-height:1;transform:translate(-4px,-30px)">📍</div>`, iconSize:[30,30], iconAnchor:[15,15] }) }).addTo(pick.map);
+      pick.marker.on("dragend", () => { const p = pick.marker.getLatLng(); setLoc(p.lat, p.lng, "지도"); });
+    } else pick.marker.setLatLng(ll);
+  }
+  $("#locBtn").onclick = locate;
+  function locate() {
+    const say = $("#locSay"); say.className = "say";
+    if (!navigator.geolocation) { say.textContent = "지도에서 빗물받이가 있는 곳을 직접 눌러요."; return; }
+    say.textContent = "위치를 찾고 있어요… ⏳";
+    navigator.geolocation.getCurrentPosition(
+      p => { setLoc(p.coords.latitude, p.coords.longitude, "GPS"); if (pick.map) pick.map.setView([p.coords.latitude, p.coords.longitude], 18); },
+      () => { say.className = "say"; say.textContent = "자동으로 못 찾았어요. 지도에서 빗물받이가 있는 곳을 직접 눌러요. 👆"; },
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 20000 });
+  }
+  function setLoc(lat, lng, src) {
+    Object.assign(draft, { lat, lng, src });
+    placePin();
+    $("#whereBox").classList.remove("hide");
+    $("#whereText").textContent = src === "GPS" ? "내 위치를 찾았어요! 📍가 빗물받이 자리와 다르면 지도를 눌러 고쳐요." : src === "사진" ? "사진에서 위치를 찾았어요!" : "📍를 꽂았어요!";
+    const say = $("#locSay"); say.className = "say"; say.textContent = "";
+    checkDup(); saveDraftSoon();
+  }
+  // 거리(m)
+  function dist(a, b) { const R0 = 6371000, t = Math.PI / 180, dLa = (b.lat - a.lat) * t, dLo = (b.lng - a.lng) * t;
+    const h = Math.sin(dLa/2)**2 + Math.cos(a.lat*t) * Math.cos(b.lat*t) * Math.sin(dLo/2)**2; return 2 * R0 * Math.asin(Math.sqrt(h)); }
+  function checkDup() {
+    const box = $("#dupWarn");
+    if (draft.lat == null) { box.classList.add("hide"); return; }
+    const near = allReports().filter(r => r.id !== state.editId && (r.phase || "") === phase && dist(r, draft) <= DUP_METERS);
+    box.classList.toggle("hide", !near.length);
+    if (near.length) { const r = near[0]; box.innerHTML = `⚠️ 바로 옆(${Math.round(dist(r, draft))}m)에 <b>${numOf(r.id)}번</b> 빗물받이가 이미 있어요. 같은 빗물받이라면 새로 저장하지 말고 지도에서 ${numOf(r.id)}번을 눌러 고쳐요.`; }
+  }
+
+  const FILTERS = [
+    ["phase", "조사 단계", [["real","연습 빼고 모두"], ["all","연습까지 모두"], ...PHASES_ALL.map(([k,e,l]) => [k, e + " " + l])]],
+    ["team", "모둠", [["all","모든 모둠"], ...GROUPS.map(([g,e]) => [g, e + " " + g])]],
+    ["grade", "상태", [["all","모든 상태"], ...GR.map((g,i) => [String(i), g.e + " " + g.l]), ["todo","🔍 살펴보기 전"]]],
+    ["env", "주변", [["all","모든 곳"], ...ENVS.map(([k,e,l]) => [k, e + " " + l])]],
+    ["type", "쓰레기", [["all","모든 쓰레기"], ...TYPES.map(([k,e,l]) => [k, e + " " + l])]]
+  ];
+  const opts = (list, v) => list.map(([k,l]) => `<option value="${k}"${k === v ? " selected" : ""}>${l}</option>`).join("");
+  function filtered(rs, onlyPhase) {
+    const f = state.f;
+    return rs.filter(r => {
+      const ph = r.phase || "";
+      if (f.phase === "real" ? ph === "practice" : f.phase !== "all" && ph !== f.phase) return false;
+      if (onlyPhase) return true;
+      if (f.team !== "all" && r.team !== f.team) return false;
+      if (f.grade === "todo") { if (isDone(r)) return false; }
+      else if (f.grade !== "all" && (!isDone(r) || gOf(r) !== +f.grade)) return false;
+      if (f.env !== "all" && !envList(r).includes(f.env)) return false;
+      if (f.type !== "all" && !(r.types || []).includes(f.type)) return false;
+      return true;
+    });
+  }
+  let big = null, bigLayer = null, lastKey = null, pendingFit = null;
+  // 지도 칸의 크기가 정해진 뒤에 맞춰야 세계지도로 줄어들지 않아요
+  function doFit() {
+    if (!big || !pendingFit || !$("#bigMap").offsetWidth) return;
+    big.invalidateSize(); big.fitBounds(pendingFit, { maxZoom: 18 }); pendingFit = null;
+  }
+  if (window.ResizeObserver) new ResizeObserver(() => { if (big) { big.invalidateSize(); doFit(); } }).observe($("#bigMap"));
+  function renderMap(fit) {
+    const fe = $("#mapFilters");
+    fe.innerHTML = FILTERS.map(([k, lab, list]) => `<label>${lab}<select data-f="${k}">${opts(list, state.f[k])}</select></label>`).join("")
+      + `<button type="button" class="toggle" id="colorToggle" aria-pressed="${state.hideColor}">🎨 색 숨기기</button>`;
+    fe.onchange = ev => { const s = ev.target.closest("select"); if (s) { state.f[s.dataset.f] = s.value; renderMap(true); } };
+    $("#colorToggle").onclick = () => { state.hideColor = !state.hideColor; renderMap(false); };
+    $("#legend").innerHTML = state.hideColor
+      ? `<span>🎨 색을 숨겼어요. 학습지에 우리 모둠만의 색·기호와 범례를 만들어 봐요!</span>`
+      : GR.map(g => `<span><i style="background:var(--${g.c})"></i>${g.e} ${g.l}</span>`).join("") + `<span><i style="background:#7D8A93"></i>🔍 살펴보기 전</span><span style="color:var(--muted)">(색칠한 칸 ${GRADE_CUT[0]}% 미만 / ${GRADE_CUT[1]}% 미만 / 그 이상)</span>`;
+    if (typeof L === "undefined") { $("#bigMap").innerHTML = `<div class="empty">지도를 불러오지 못했어요.</div>`; return; }
+    if (!big) { big = L.map("bigMap").setView(DEFAULT_CENTER, 15); L.tileLayer(TILE_URL, TILE_OPT).addTo(big); bigLayer = L.layerGroup().addTo(big); }
+    setTimeout(() => big.invalidateSize(), 50);
+    const pts = filtered(allReports());
+    $("#mapCount").textContent = `지금 ${pts.length}곳이 보여요.`;
+    bigLayer.clearLayers();
+    const rank = r => isDone(r) ? gOf(r) : -1;
+    pts.sort((a,b) => rank(a) - rank(b)).forEach(r => {
+      const g = gOf(r), done = isDone(r);
+      L.marker([r.lat, r.lng], { icon: pinIcon(state.hideColor || !done ? "gx" : GR[g].c, numOf(r.id)), title: `${numOf(r.id)}번 ${done ? GR[g].l : "살펴보기 전"}`, keyboard: true })
+        .on("click", () => openDetail(r.id)).addTo(bigLayer);
+    });
+    const key = JSON.stringify(state.f);
+    if ((fit || lastKey !== key) && pts.length) { pendingFit = L.latLngBounds(pts.map(r => [r.lat, r.lng])).pad(0.25); setTimeout(doFit, 60); }
+    lastKey = key;
+  }
+
+  /* ---------- 임시 저장(작성 중) ---------- */
+  let draftTimer = 0;
+  function saveDraftSoon() { clearTimeout(draftTimer); draftTimer = setTimeout(saveDraft, 300); }
+  function saveDraft() {
+    if (state.view !== "survey" || state.step < 1 || state.step > LAST_STEP) return;
+    if (!draft.photo && !state.editId) { store.del("drain-draft"); return; }
+    const d = { ...draft, cells:[...draft.cells], types:[...draft.types], reasons:[...draft.reasons], envs:[...draft.envs], step: state.step, editId: state.editId, phase, team,
+      other: $("#otherInput").value, place: $("#placeInput").value, memo: $("#memoInput").value, why: $("#whyInput").value };
+    if (!store.set("drain-draft", JSON.stringify(d))) { d.photo = null; d.thumb = null; store.set("drain-draft", JSON.stringify(d)); }
+  }
+  $("#view-survey").addEventListener("input", saveDraftSoon);
+  $("#view-survey").addEventListener("click", saveDraftSoon);
+  function restoreDraft() {
+    let d; try { d = JSON.parse(store.get("drain-draft") || "null"); } catch {}
+    if (!d) return;
+    draft = { ...newDraft(), ...d, cells:new Set(d.cells), types:new Set(d.types), reasons:new Set(d.reasons), envs:new Set(d.envs || []) };
+    state.editId = d.editId || null; phase = okPhase(d.phase || phase); team = d.team || team;
+    $("#otherInput").value = d.other || ""; $("#placeInput").value = d.place || ""; $("#memoInput").value = d.memo || ""; $("#whyInput").value = d.why || "";
+    $("#buttOut").textContent = draft.butts;
+    syncAllTiles(); renderStart();
+    if (draft.lat != null) { $("#whereBox").classList.remove("hide"); $("#whereText").textContent = "📍를 꽂았어요!"; }
+    goStep(draft.photo ? Math.min(d.step || 1, LAST_STEP) : 1);
+  }
+  function syncAllTiles() { refresh($("#typeTiles"), typeOn); refresh($("#envTiles"), envOn); refresh($("#reasonTiles"), reasonOn); syncLid(); syncTypeExtras(); syncCounts(); }
+  $("#resumeGo").onclick = () => { $("#resumeBox").classList.add("hide"); restoreDraft(); };
+  $("#resumeNo").onclick = () => { $("#resumeBox").classList.add("hide"); store.del("drain-draft"); };
+
+  /* ---------- 보내지 못한 기록(오프라인) ---------- */
+  const outbox = () => { try { return JSON.parse(store.get("drain-outbox-" + CLS) || "[]"); } catch { return []; } };
+  const setOutbox = a => store.set("drain-outbox-" + CLS, JSON.stringify(a));
+  let flushing = false;
+  async function flushOutbox() {
+    const box = outbox(); if (!box.length || flushing || !hasGAS) return;
+    flushing = true; const left = [];
+    for (const it of box) {
+      try { await api(it.kind, it.kind === "save" ? { record: it.record } : { id: it.id, record: it.record }); }
+      catch (e) { if (e.server) continue; left.push(it); } // 서버가 거절한 것은 버리고, 네트워크 문제만 다시 시도
+    }
+    setOutbox(left); flushing = false;
+    if (left.length !== box.length) load(true);
+  }
+  window.addEventListener("online", flushOutbox);
+
+  /* ---------- save & load ---------- */
+  async function save() {
+    const btn = $("#nextBtn"), say = $("#photoSay");
+    // 사진·위치·막힌 정도·쓰레기·주변·원인을 한 번에 저장해요
+    const cov = coverage();
+    const rec = { phase, team, lat: draft.lat, lng: draft.lng, locSource: draft.src, place: $("#placeInput").value.trim(),
+      cells: [...draft.cells], coverage: cov, types: [...draft.types], other: draft.types.has("etc") ? $("#otherInput").value.trim() : "",
+      butts: draft.types.has("butt") && draft.buttsTouched ? draft.butts : null, lidBlocked: draft.lid === "yes",
+      env: [...draft.envs].join(","), memo: $("#memoInput").value.trim(), reasons: [...draft.reasons], why: $("#whyInput").value.trim(), done: true };
+    if (!state.editId || draft.photoChanged) { rec.photo = draft.photo; rec.thumb = draft.thumb; }
+    const editing = state.editId, kind = editing ? "update" : "save";
+    btn.disabled = true; btn.textContent = "저장 중… ⏳";
+    let queued = false;
+    try {
+      const res = await api(kind, editing ? { id: editing, record: rec } : { record: rec });
+      const id = res.id || editing;
+      state.reports.set(id, { ...(state.reports.get(id) || { createdAt: Date.now(), no: res.no }), id, ...rec, photo: undefined, thumb: draft.thumb, mine: true });
+      if (draft.photoChanged) state.photoCache.delete(id);
+    } catch (e) {
+      if (e.server) { btn.disabled = false; updateNav(); return nudge($("#saveSay"), e.message || "저장이 안 됐어요. 다시 눌러요."); }
+      // 인터넷이 끊겼을 때: 기기에 보관했다가 연결되면 자동으로 보내요
+      const box = outbox(); box.push({ kind, id: editing, record: rec, at: Date.now() });
+      if (!setOutbox(box)) { btn.disabled = false; updateNav(); return nudge($("#saveSay"), "인터넷이 안 되고 기기 저장 공간도 부족해요. 선생님께 알려 주세요."); }
+      queued = true;
+      if (!editing) { const tid = "q:" + uid(); state.reports.set(tid, { id: tid, createdAt: Date.now(), ...rec, photo: undefined, thumb: draft.thumb, mine: true, pending: true }); }
+    }
+    btn.disabled = false;
+    store.set("drain-last", draft.lat + "," + draft.lng);
+    store.del("drain-draft");
+    const mine = allReports().filter(r => r.team === team && (r.phase || "") === phase).length;
+    const g = GR[gradeOf(cov)];
+    $("#doneEmoji").textContent = queued ? "📦" : editing ? "✅" : g.e;
+    $("#doneTitle").textContent = queued ? "기기에 보관했어요" : editing ? "고치기 완료!" : "조사 완료!";
+    $("#doneText").textContent = queued
+      ? "지금은 인터넷이 안 돼요. 기록은 이 기기에 잘 보관했고, 인터넷이 다시 되면 저절로 보내요. 앱을 지우거나 기록을 지우지 마세요."
+      : editing ? `${numOf(editing)}번 기록을 고쳤어요.`
+      : `이 빗물받이는 '${g.l}'로 기록했어요. ${groupEmoji(team)} ${team}은 지금까지 ${mine}곳을 조사했어요!`;
+    state.editId = null;
+    onData(); goStep(DONE); if (!queued) load();
+  }
+  function resetDraft(keepStore) {
+    draft = newDraft(); state.editId = null;
+    ["#otherInput","#placeInput","#memoInput","#whyInput"].forEach(s => $(s).value = "");
+    $("#shot").innerHTML = ""; ["#photoSay","#locSay","#saveSay","#envSay"].forEach(s => { $(s).textContent = ""; $(s).className = "say"; });
+    $("#whereBox").classList.add("hide"); $("#dupWarn").classList.add("hide"); $("#buttOut").textContent = "0";
+    syncAllTiles(); renderPrivacy();
+    if (pick.marker) { pick.marker.remove(); pick.marker = null; }
+    if (!keepStore) store.del("drain-draft");
+  }
+  let loading = false;
+  async function load(quiet) {
+    if (loading) return; loading = true;
+    try {
+      await flushOutbox();
+      const list = (await api("list")).reports;
+      const pend = [...state.reports.values()].filter(r => r.pending);
+      state.reports = new Map(list.map(r => [r.id, r]));
+      if (outbox().length) pend.forEach(r => state.reports.set(r.id, r));
+      state.loaded = true; onData();
+    } catch { if (!quiet) $("#sync").textContent = "불러오기 실패"; }
+    finally { loading = false; }
+  }
+  setInterval(() => { if (!document.hidden) { if (state.view !== "survey") load(true); else flushOutbox(); } }, 30000);
+
+  const allReports = () => [...state.reports.values()].sort((a,b) => (a.createdAt||0) - (b.createdAt||0));
+  // 번호는 저장할 때 정해져서, 다른 기록을 지워도 바뀌지 않아요 (보내는 중인 기록은 임시 번호)
+  const numOf = id => { const r = state.reports.get(id); if (r && r.no) return r.no; const mx = Math.max(0, ...[...state.reports.values()].map(x => x.no || 0)); return mx + allReports().filter(x => !x.no).findIndex(x => x.id === id) + 1; };
+  const typeText = r => (r.types||[]).map(t => T[t] ? T[t].e + " " + (t === "etc" && r.other ? r.other : T[t].l) : "").filter(Boolean).join(", ");
+  const reasonText = r => (r.reasons||[]).map(k => R[k] ? R[k].e + " " + R[k].l : "").filter(Boolean).join(", ");
+  const fmt = t => { const d = new Date(t); return `${d.getMonth()+1}월 ${d.getDate()}일`; };
+  function onData() {
+    const q = outbox().length;
+    const rsAll = filtered(allReports(), true), todo = rsAll.filter(r => !isDone(r)).length;
+    $("#sync").textContent = `${rsAll.length}곳 조사함` + (q ? ` · 📦 보낼 기록 ${q}개` : "");
+    if (state.view === "map") renderMap(false);
+    if (state.view === "results") renderResults();
+    if (state.view === "survey" && state.step === 2) checkDup();
+  }
+
+  /* ---------- results ---------- */
+  $("#resPhase").innerHTML = opts(FILTERS[0][2], state.f.phase);
+  $("#resPhase").onchange = e => { state.f.phase = e.target.value; onData(); };
+  const itemHtml = (r, extra = "") => `
+        <button type="button" class="item" data-id="${esc(r.id)}">${extra}
+          ${r.thumb ? `<img src="${esc(r.thumb)}" alt="" loading="lazy">` : `<span class="ph"></span>`}
+          <span><span class="t">${numOf(r.id)}번 ${isDone(r) ? GR[gOf(r)].e + " " + GR[gOf(r)].l : "🔍 살펴보기 전"}${r.pending ? `<span class="pending">보내는 중</span>` : ""}</span>
+          <span class="s">${P[r.phase] ? P[r.phase].e + " " : ""}${esc(r.place || "장소 설명 없음")}${r.team ? " · " + groupEmoji(r.team) + " " + esc(r.team) : ""}</span>
+          <span class="s">${isDone(r) ? (esc(typeText(r)) || "쓰레기 없음") : "교실에서 살펴볼 차례예요"}</span></span>
+        </button>`;
+  function renderResults() {
+    $("#resPhase").value = state.f.phase;
+    const body = $("#resultsBody"), rsAll = filtered(allReports(), true), rs = rsAll.filter(isDone), todo = rsAll.length - rs.length;
+    renderTeacher();
+    if (!state.loaded) { body.innerHTML = `<div class="empty">불러오는 중이에요… ⏳</div>`; return; }
+    if (!rsAll.length) { body.innerHTML = `<div class="empty">아직 조사한 빗물받이가 없어요.<br>📸 조사하기에서 첫 번째 빗물받이를 찾아봐요!</div>`; return; }
+    const banner = todo ? `<div class="todo-banner">📝 막힌 정도를 아직 기록하지 않은 사진이 <b>${todo}장</b> 있어요. 아래 결과는 기록한 ${rs.length}곳으로만 계산했어요. (사진을 눌러 ✏️ 고치기로 채울 수 있어요)</div>` : "";
+    body.onclick = e => { const b = e.target.closest("[data-id]"); if (b) openDetail(b.dataset.id); };
+    if (!rs.length) { body.innerHTML = banner + `<div class="empty">막힌 정도를 기록한 빗물받이가 생기면 결과가 나타나요.</div>`; return; }
+    const n = rs.length, bad = rs.filter(r => gOf(r) >= 1).length, gc = GR.map((_,i) => rs.filter(r => gOf(r) === i).length);
+    const tc = TYPES.map(([k,e,l]) => [e,l,rs.filter(r => (r.types||[]).includes(k)).length]).filter(x => x[2]).sort((a,b)=>b[2]-a[2]);
+    const ea = ENVS.map(([k,e,l]) => { const g = rs.filter(r => envList(r).includes(k)); return [e,l,g.length, g.length ? Math.round(g.reduce((s,r)=>s+(+r.coverage||0),0)/g.length) : 0]; }).filter(x => x[2]).sort((a,b)=>b[3]-a[3]);
+    const gs = GROUPS.map(([g,e]) => [e,g,rsAll.filter(r => r.team === g).length]), mg = Math.max(1, ...gs.map(x=>x[2]));
+    const rc = REASONS.map(([k,e,l]) => [e,l,rs.filter(r => (r.reasons||[]).includes(k)).length]).filter(x => x[2]).sort((a,b)=>b[2]-a[2]);
+    const maxT = Math.max(1, ...tc.map(x=>x[2])), maxR = Math.max(1, ...rc.map(x=>x[2]));
+    const top = rs.slice().sort((a,b) => (+b.coverage||0) - (+a.coverage||0)).filter(r => +r.coverage > 0).slice(0, 3);
+    // 데이터 점검 (4~5차시·9~10차시 활동2)
+    const dups = []; rsAll.forEach((a,i) => rsAll.slice(i+1).forEach(b => { if ((a.phase||"") === (b.phase||"") && dist(a,b) <= DUP_METERS) dups.push([a,b]); }));
+    const noEnv = rs.filter(r => !envList(r).length), noWhy = rs.filter(r => !(r.reasons||[]).length), noPhoto = rsAll.filter(r => r.hasPhoto === false && !r.thumb);
+    const lnk = r => `<button type="button" class="lnk" data-id="${esc(r.id)}">${numOf(r.id)}번</button>`;
+    const chk = [
+      dups.length ? `<li>🔁 같은 빗물받이일 수 있어요(${DUP_METERS}m 안): ${dups.map(([a,b]) => lnk(a) + "·" + lnk(b)).join(", ")}</li>` : "",
+      noEnv.length ? `<li>📍 주변 환경을 안 고른 기록: ${noEnv.map(lnk).join(", ")}</li>` : "",
+      noWhy.length ? `<li>🤔 원인 생각을 안 적은 기록: ${noWhy.map(lnk).join(", ")}</li>` : "",
+      noPhoto.length ? `<li>📷 사진이 없는 기록: ${noPhoto.map(lnk).join(", ")}</li>` : ""
+    ].join("");
+    body.innerHTML = banner + `
+      <p class="hero">우리 반이 빗물받이 ${n}곳을 조사했어요. ${bad ? `그중 ${bad}곳은 일부 또는 많이 막혀 있었어요.` : "아직 막힌 곳은 없었어요!"}</p>
+      <div class="faces three">${GR.map((g,i) => `<div class="fbox"><div class="e" aria-hidden="true">${g.e}</div><div class="c">${gc[i]}</div><div class="l">${g.l}</div></div>`).join("")}</div>
+      ${top.length ? `<div class="panel"><h3>🔥 가장 많이 막힌 곳 TOP ${top.length}</h3><div class="rank list">${top.map((r,i) => itemHtml(r, `<span class="no">${i+1}</span>`)).join("")}</div><p class="small">이 장소들 주변에는 어떤 공통점이 있을까요? 지도에서 주변을 살펴봐요.</p></div>` : ""}
+      <div class="panel"><h3>모둠별로 찍은 빗물받이</h3>${gs.map(([e,g,c]) => `<div class="hbar"><span class="e" aria-hidden="true">${e}</span><span>${g}</span><span class="track"><i style="width:${c/mg*100}%;background:var(--g0)"></i></span><span class="v">${c}곳</span></div>`).join("")}</div>
+      ${tc.length ? `<div class="panel"><h3>가장 많이 나온 쓰레기는 ${tc[0][0]} ${tc[0][1]}!</h3>${tc.map(([e,l,c]) => `<div class="hbar"><span class="e" aria-hidden="true">${e}</span><span>${l}</span><span class="track"><i style="width:${c/maxT*100}%"></i></span><span class="v">${c}곳</span></div>`).join("")}</div>` : ""}
+      ${ea.length ? `<div class="panel"><h3>어떤 곳이 많이 막혔을까?</h3><p style="margin:0 0 8px;color:var(--muted);font-size:.95rem">막대가 길수록 칸이 많이 색칠됐어요. (괄호는 조사한 곳 수)</p>${ea.map(([e,l,c,a]) => `<div class="hbar"><span class="e" aria-hidden="true">${e}</span><span>${l} (${c})</span><span class="track"><i style="width:${Math.max(a,2)}%;background:var(--sun)"></i></span><span class="v">${a}%</span></div>`).join("")}</div>` : ""}
+      ${rc.length ? `<div class="panel"><h3>우리가 생각한 원인</h3><p style="margin:0 0 8px;color:var(--muted);font-size:.95rem">이건 우리 '생각'이에요. 지도와 사진이 이 생각을 뒷받침하는지 확인해 봐요.</p>${rc.map(([e,l,c]) => `<div class="hbar"><span class="e" aria-hidden="true">${e}</span><span>${l}</span><span class="track"><i style="width:${c/maxR*100}%;background:var(--g1)"></i></span><span class="v">${c}곳</span></div>`).join("")}</div>` : ""}
+      <div class="panel"><h3>🔍 우리 자료 점검하기</h3>${chk ? `<ul class="chk">${chk}</ul><p class="small">번호를 눌러 확인하고, 내 모둠 기록이면 ✏️ 고치기나 🗑️ 지우기를 해요.</p>` : `<p class="ok">✅ 점검할 것이 없어요. 아주 꼼꼼해요!</p>`}</div>
+      <div class="panel"><h3>조사한 빗물받이 모두 보기</h3><div class="list">${rsAll.slice().reverse().map(r => itemHtml(r)).join("")}</div></div>`;
+  }
+
+  /* ---------- CSV ---------- */
+  $("#csvBtn").onclick = () => {
+    const rs = filtered(allReports(), true);
+    if (!rs.length) return alert("내려받을 기록이 없어요.");
+    const stamp = t => { const d = new Date(t), z = n => String(n).padStart(2, "0"); return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())} ${z(d.getHours())}:${z(d.getMinutes())}`; };
+    const head = ["번호","날짜","학급","조사단계","모둠","위도","경도","장소","주변환경","살펴보기","색칠칸수","막힘비율(%)","상태", ...TYPES.map(t => t[2]), "기타내용","담배꽁초(개)","덮개","생각한원인","까닭(본 것)","더 본 것"];
+    const rows = rs.map(r => [numOf(r.id), stamp(r.createdAt), CLASS_LABEL, P[r.phase] ? P[r.phase].l : "", r.team, (+r.lat).toFixed(6), (+r.lng).toFixed(6), r.place, envList(r).map(k => E[k].l).join(" / "),
+      isDone(r) ? "완료" : "전", isDone(r) ? (r.cells||[]).length : "", isDone(r) ? r.coverage : "", isDone(r) ? GR[gOf(r)].l : "", ...TYPES.map(t => (r.types||[]).includes(t[0]) ? 1 : 0), r.other, r.butts ?? "", r.lidBlocked ? "덮임" : "",
+      (r.reasons||[]).map(k => R[k] ? R[k].l : k).join(" / "), r.why, r.memo]);
+    const cell = v => { const s = String(v ?? ""); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+    const csv = "﻿" + [head, ...rows].map(row => row.map(cell).join(",")).join("\r\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    a.download = `빗물받이_${CLASS_LABEL.replace(/\s+/g, "_")}_${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  };
+
+  /* ---------- 선생님 메뉴 ---------- */
+  function renderTeacher() {
+    const el = $("#teacherIn");
+    if (!state.teacher) {
+      el.innerHTML = `<p class="small">선생님 비밀번호를 넣으면 모든 기록을 고치거나 지울 수 있어요.</p>
+        <div class="tpin"><input type="password" id="pinIn" inputmode="numeric" autocomplete="off" aria-label="선생님 비밀번호"><button type="button" class="sbtn" id="pinBtn">선생님 모드 켜기</button></div><div class="say" id="pinSay"></div>`;
+      $("#pinBtn").onclick = async () => {
+        const v = $("#pinIn").value.trim(); if (!v) return;
+        teacherPin = v;
+        try { const r = await api("teacher"); if (!r.ok) throw 0; state.teacher = true; renderTeacher(); }
+        catch { teacherPin = ""; nudge($("#pinSay"), "비밀번호가 맞지 않아요."); }
+      };
+      return;
+    }
+    const nPr = allReports().filter(r => r.phase === "practice").length;
+    el.innerHTML = `<p class="ok">👩‍🏫 선생님 모드가 켜져 있어요. 기록을 눌러 고치거나 지울 수 있어요.</p>
+      <p class="small">이 앱은 ${esc(CLASS_LABEL)} 북가좌동 조사 전용이에요. 모둠 수를 바꾸려면 주소 끝에 <code>?groups=${nGroups}</code>처럼 붙여요.</p>
+      <div class="tbtns"><button type="button" class="sbtn" id="purgeBtn">✏️ 연습 기록 ${nPr}개 모두 지우기</button><button type="button" class="sbtn" id="tOff">선생님 모드 끄기</button></div>
+      <p class="small">지운 기록은 구글 시트에 '지움' 표시만 되어 남아 있어서, 필요하면 시트에서 되살릴 수 있어요.</p>`;
+    $("#purgeBtn").onclick = async () => {
+      if (!nPr || !confirm(`연습 기록 ${nPr}개를 모두 지울까요?`)) return;
+      try { await api("purgePractice"); load(); } catch (e) { alert(e.message || "지우지 못했어요."); }
+    };
+    $("#tOff").onclick = () => { state.teacher = false; teacherPin = ""; renderTeacher(); };
+  }
+
+  /* ---------- detail ---------- */
+  async function openDetail(id) {
+    const r = state.reports.get(id); if (!r) return;
+    const dlg = $("#detail"), body = $("#dlgBody"), g = GR[gOf(r)];
+    const own = !r.pending && (r.mine || state.teacher), done = isDone(r);
+    const btns = own ? [`<button type="button" class="edit" id="dlgEdit">${done ? "✏️ 고치기" : "✏️ 막힌 정도 채우기"}</button>`, `<button type="button" class="del" id="dlgDel">🗑️ 지우기</button>`] : [];
+    body.innerHTML = `
+      <div class="dlg-head"><h3 id="dlgTitle">${numOf(id)}번 빗물받이</h3><button class="close" type="button" aria-label="닫기">✕</button></div>
+      <div id="dlgPhoto">${r.thumb ? `<img src="${esc(r.thumb)}" alt="빗물받이 사진" style="width:100%;border-radius:16px;filter:blur(2px)">` : ""}</div>
+      ${done ? `<div class="face"><span class="e" aria-hidden="true">${g.e}</span><span><span class="t">${g.l}</span><br><span class="n">12칸 중 ${(r.cells||[]).length}칸 (${+r.coverage || 0}%)</span></span></div>`
+        : `<div class="face"><span class="e" aria-hidden="true">🔍</span><span><span class="t">막힌 정도를 아직 기록하지 않았어요</span><br><span class="n">✏️ 고치기로 채울 수 있어요</span></span></div>`}
+      <ul class="facts">
+        ${done ? `<li><span class="e" aria-hidden="true">🗑️</span><span>${esc(typeText(r)) || "쓰레기 없음"}${r.butts != null ? ` (꽁초 ${r.butts}개)` : ""}</span></li>` : ""}
+        ${r.lidBlocked ? `<li><span class="e" aria-hidden="true">🙅</span><span>고무판이나 비닐로 덮여 있었어요</span></li>` : ""}
+        <li><span class="e" aria-hidden="true">📍</span><span>${P[r.phase] ? P[r.phase].e + " " + P[r.phase].l + " · " : ""}${esc(r.place || "장소 설명 없음")}${envList(r).length ? " · " + envText(r) : ""}</span></li>
+        <li><span class="e" aria-hidden="true">${groupEmoji(r.team)}</span><span>${esc(r.team || "모둠 없음")} · ${fmt(r.createdAt)}${r.updatedAt && r.updatedAt - r.createdAt > 60000 ? " (고침)" : ""}</span></li>
+        ${r.memo ? `<li><span class="e" aria-hidden="true">👀</span><span>${esc(r.memo)}</span></li>` : ""}
+        ${(r.reasons||[]).length || r.why ? `<li><span class="e" aria-hidden="true">🤔</span><span><b>생각한 원인:</b> ${esc(reasonText(r)) || "-"}${r.why ? `<br><b>까닭(본 것):</b> ${esc(r.why)}` : ""}</span></li>` : ""}
+      </ul>
+      ${btns.length ? `<div class="dlg-btns">${btns.join("")}</div>` : ""}
+      ${r.pending ? `<p class="small">인터넷이 되면 보내져요.</p>` : !own ? `<p class="small">이 기록을 만든 기기(모둠)나 선생님만 고칠 수 있어요.</p>` : ""}`;
+    body.querySelector(".close").onclick = () => dlg.close();
+    dlg.onclick = e => { if (e.target === dlg) dlg.close(); };
+    if (own) {
+      $("#dlgEdit").onclick = async () => { dlg.close(); await startEdit(r); };
+      $("#dlgDel").onclick = async () => {
+        if (!confirm(`${numOf(id)}번 기록을 지울까요?`)) return;
+        try { await api("delete", { id }); state.reports.delete(id); dlg.close(); onData(); load(true); }
+        catch (e) { alert(e.message || "지우지 못했어요. 인터넷을 확인해요."); }
+      };
+    }
+    if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open","");
+    const full = await fullPhoto(r);
+    const ph = $("#dlgPhoto"); if (!ph || !dlg.open) return;
+    const on = new Set(done ? (r.cells || []) : []); let cells = "";
+    for (let i = 0; i < COLS*ROWS; i++) cells += `<div class="cell${on.has(i) ? " on" : ""}" style="cursor:default"></div>`;
+    const src = full || r.thumb; if (!src) return;
+    ph.innerHTML = `<div class="grate-wrap" style="touch-action:auto"><img src="${esc(src)}" alt="빗물받이 사진"><div class="grate" style="grid-template-columns:repeat(${COLS},1fr);grid-template-rows:repeat(${ROWS},1fr)">${cells}</div></div>`;
+  }
+  async function fullPhoto(r) {
+    let full = state.photoCache.get(r.id) || "";
+    if (!full && !r.pending && r.hasPhoto !== false) { try { full = (await api("photo", { id: r.id })).data; if (full) state.photoCache.set(r.id, full); } catch {} }
+    return full;
+  }
+  async function startEdit(r) {
+    resetDraft();
+    const full = await fullPhoto(r);
+    state.editId = r.id;
+    phase = P[r.phase] ? r.phase : okPhase(phase); team = r.team || team; renderStart();
+    Object.assign(draft, { photo: full || r.thumb || null, thumb: r.thumb || null, photoChanged: false, privacyOk: true,
+      lat: +r.lat, lng: +r.lng, src: r.locSource || "지도",
+      cells: new Set(r.cells || []), types: new Set(r.types || []), butts: r.butts ?? 0, buttsTouched: r.butts != null,
+      lid: isDone(r) ? (r.lidBlocked ? "yes" : "no") : null, envs: new Set(envList(r)), reasons: new Set(r.reasons || []) });
+    $("#placeInput").value = r.place || ""; $("#otherInput").value = r.other || ""; $("#memoInput").value = r.memo || ""; $("#whyInput").value = r.why || "";
+    $("#buttOut").textContent = draft.butts; syncAllTiles();
+    $("#whereBox").classList.remove("hide"); $("#whereText").textContent = "저장된 자리에 📍가 있어요. 틀렸으면 지도를 눌러 고쳐요.";
+    syncAllTiles();
+    showView("survey"); goStep(1);
+  }
+
+
+  let envMap = null, envMarker = null;
+  function showEnvMap() {
+    const el = $("#envMap");
+    if (typeof L === "undefined" || !Number.isFinite(draft.lat)) { el.classList.add("hide"); return; }
+    el.classList.remove("hide");
+    const ll = [draft.lat, draft.lng];
+    if (!envMap) {
+      envMap = L.map("envMap").setView(ll, 18);
+      L.tileLayer(TILE_URL, TILE_OPT).addTo(envMap);
+      envMarker = L.marker(ll, { interactive: false, icon: L.divIcon({ className:"", html:`<div style="font-size:34px;line-height:1;transform:translate(-4px,-28px)">📍</div>`, iconSize:[30,30], iconAnchor:[15,15] }) }).addTo(envMap);
+    } else { envMarker.setLatLng(ll); envMap.setView(ll, 18); }
+    setTimeout(() => { envMap.invalidateSize(); envMap.setView(ll, 18); }, 60);
+  }
+
+  goStep(0);
+  if (store.get("drain-draft")) $("#resumeBox").classList.remove("hide");
+  load();
+})();
+</script>
+</body>
+</html>
