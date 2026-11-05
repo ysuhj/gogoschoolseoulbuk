@@ -280,6 +280,10 @@ details.changes summary{cursor:pointer;font-weight:700}
 </header>
 
 <main>
+  <div class="modebar narrow" id="modebar" role="group" aria-label="활동 고르기">
+    <button type="button" data-mode="survey" aria-pressed="true">📸 조사하기<small>밖에서 · 사진·막힌 정도·주변</small></button>
+    <button type="button" data-mode="inspect" aria-pressed="false">🤔 원인 살펴보기<small id="modeTodo">교실에서 · 왜 막혔을까?</small></button>
+  </div>
   <section id="view-survey" class="narrow" aria-label="조사하기">
     <div class="editbar hide" id="editBar"><span aria-hidden="true">✏️</span><span id="editText"></span><button type="button" id="editCancel">그만 고치기</button></div>
     <div class="progress" id="progress" aria-hidden="true"></div>
@@ -300,7 +304,7 @@ details.changes summary{cursor:pointer;font-weight:700}
         <li><span class="e" aria-hidden="true">🚗</span>골목에서 나오는 차와 공사장을 조심하고, 공사장 울타리 안에는 들어가지 않아요.</li>
         <li><span class="e" aria-hidden="true">🏪</span>가게 앞에서는 손님과 지나가는 사람을 막지 않게 비켜서 찍어요.</li>
       </ul>
-      <div class="mode-note"><span class="e" aria-hidden="true">📸🔍</span><span>빗물받이를 <b>찍고</b>, 그 자리에서 <b>위치 → 막힌 정도 → 쓰레기 → 주변</b>까지 한 번에 기록해요.</span></div>
+      <div class="mode-note"><span class="e" aria-hidden="true">📸🔍</span><span>밖에서는 빗물받이를 <b>찍고</b> <b>위치 → 막힌 정도 → 쓰레기 → 주변</b>까지 기록해요. <b>왜 막혔는지</b>는 교실에서 위쪽의 <b>🤔 원인 살펴보기</b>로 함께 생각해요.</span></div>
       <h3 class="sec-h">오늘은 어디를 조사해요?</h3>
       <div class="tiles phase" id="phaseTiles" style="margin-bottom:18px"></div>
       <h3 class="sec-h">우리는 몇 모둠이에요?</h3>
@@ -381,20 +385,7 @@ details.changes summary{cursor:pointer;font-weight:700}
       </div>
     </div>
 
-    <div class="card step hide" data-step="6">
-      <h2 class="q">왜 이렇게 되었을까? <small style="font-size:.6em;color:var(--muted)">(건너뛰어도 돼요)</small></h2>
-      <p class="sub">막힌 원인은 <b>한 가지가 아닐 수도</b> 있어요. 내 생각과 맞는 것을 <b>모두</b> 골라요.</p>
-      <p class="tip">💡 <b>본 것</b>(사실)과 <b>내 생각</b>(추측)은 달라요. 아래 칸에는 그렇게 생각한 까닭이 되는 <b>본 것</b>을 적어요.</p>
-      <div class="tiles four" id="reasonTiles"></div>
-      <p class="pickcount" id="reasonCount" aria-live="polite"></p>
-      <div class="field">
-        <label for="whyInput">🔎 그렇게 생각한 까닭은? (내가 본 것)</label>
-        <textarea id="whyInput" maxlength="200" placeholder="예: 빗물받이 바로 옆에 큰 나무가 있고 낙엽이 많이 쌓여 있었어요"></textarea>
-      </div>
-      <div class="say" id="saveSay" role="alert"></div>
-    </div>
-
-    <div class="card step hide done" data-step="7">
+    <div class="card step hide done" data-step="6">
       <div class="e" aria-hidden="true" id="doneEmoji">🎉</div>
       <h2 class="q" id="doneTitle">조사 완료!</h2>
       <p class="sub" id="doneText"></p>
@@ -404,6 +395,45 @@ details.changes summary{cursor:pointer;font-weight:700}
   </section>
 
 
+
+  <section id="view-inspect" class="narrow hide" aria-label="원인 살펴보기">
+    <div id="iList">
+      <div class="card">
+        <h2 class="q">교실에서 원인을 살펴봐요</h2>
+        <p class="sub">밖에서 조사한 빗물받이를 하나씩 골라, 사진과 기록을 보며 <b>왜 막혔는지</b> 함께 생각해요.</p>
+        <div class="ifilter" id="iFilter"></div>
+        <div class="list" id="iItems"></div>
+      </div>
+    </div>
+    <div id="rView" class="hide">
+      <div class="ihead"><img id="rHeadImg" alt=""><span id="rHeadText"></span><button type="button" id="rBack">◀ 목록으로</button></div>
+      <div class="card" style="margin-bottom:14px">
+        <h2 class="q" style="font-size:1.4rem">밖에서 본 것</h2>
+        <div id="rPhoto"></div>
+        <ul class="facts" id="rFacts"></ul>
+      </div>
+      <div class="card">
+      <h2 class="q">왜 이렇게 막혔을까?</h2>
+      <p class="sub">막힌 원인은 <b>한 가지가 아닐 수도</b> 있어요. 내 생각과 맞는 것을 <b>모두</b> 골라요.</p>
+      <p class="tip">💡 <b>본 것</b>(사실)과 <b>내 생각</b>(추측)은 달라요. 아래 칸에는 그렇게 생각한 까닭이 되는 <b>본 것</b>을 적어요.</p>
+      <div class="tiles four" id="reasonTiles"></div>
+      <p class="pickcount" id="reasonCount" aria-live="polite"></p>
+      <div class="field">
+        <label for="whyInput">🔎 그렇게 생각한 까닭은? (내가 본 것)</label>
+        <textarea id="whyInput" maxlength="200" placeholder="예: 빗물받이 바로 옆에 큰 나무가 있고 낙엽이 많이 쌓여 있었어요"></textarea>
+      </div>
+      <button type="button" class="big sky" id="rSave" style="margin-top:18px">저장하기 💾</button>
+      <div class="say" id="saveSay" role="alert"></div>
+    </div>
+    </div>
+    <div id="rDone" class="card done hide">
+      <div class="e" aria-hidden="true" id="rDoneEmoji">✅</div>
+      <h2 class="q" id="rDoneTitle">저장했어요!</h2>
+      <p class="sub" id="rDoneText"></p>
+      <button type="button" class="big sun" id="rNextBtn">다음 빗물받이 살펴보기 ▶</button>
+      <p style="margin:14px 0 0"><button type="button" class="link" id="rListBtn">목록으로</button></p>
+    </div>
+  </section>
 
   <section id="view-map" class="hide" aria-label="지도">
     <div class="refresh"><button type="button" class="sbtn" data-refresh>🔄 새로 보기</button></div>
@@ -429,7 +459,7 @@ details.changes summary{cursor:pointer;font-weight:700}
         <summary>🆕 기존 버전과 달라진 점 (수정 시안)</summary>
         <p class="small">각 항목의 [ ]는 관련 차시예요. 기존 버전: ysuhj.github.io/gogoschoolseoul</p>
         <ol class="clist">
-          <li><b>밖에서 한 번에 기록하기</b> <span class="cx">[4~5, 9~10차시]</span><br><span class="was">기존: 밖에서 사진만 찍고, 교실에서 다시 살펴보기</span><br>변경: 사진 → 위치 → 막힌 정도 → 쓰레기 → 주변(여러 개) → 원인(여러 개, 건너뛰기 가능) 순서로 그 자리에서 한 번에 기록해요.</li>
+          <li><b>밖에서 조사, 교실에서 원인 살펴보기</b> <span class="cx">[4~5, 9~10, 11~12차시]</span><br><span class="was">기존: 원인까지 밖에서 한 번에 기록</span><br>변경: 밖에서는 사진 → 위치 → 막힌 정도 → 쓰레기 → 주변(여러 개)까지 기록해요. 교실에서 📸 조사하기 탭 위쪽의 🤔 원인 살펴보기를 눌러, 사진과 기록을 보며 원인(여러 개)과 까닭을 적어요. 원인이 아직 없는 기록은 어느 기기에서나 적을 수 있어요.</li>
           <li><b>기록 고치기·지우기</b> <span class="cx">[4~5, 9~10차시 활동2]</span><br><span class="was">기존: 저장만 되고 고칠 수 없음</span><br>변경: 기록을 눌러 ✏️ 고치기 / 🗑️ 지우기. 만든 기기(모둠)와 선생님만 할 수 있어요. 지운 기록은 시트에 남아 되살릴 수 있어요.</li>
           <li><b>막힘 상태 3단계로 통일</b> <span class="cx">[2~3, 4~5차시]</span><br><span class="was">기존: 깨끗해요·조금 있어요·많이 쌓였어요·꽉 막혔어요 (4단계)</span><br>변경: 😀 원활해요 · 😟 일부 막혔어요 · 😱 많이 막혔어요. 과정안의 '원활함/일부 막힘/많이 막힘'과 같은 말이에요. 기준(색칠 25%·55%)은 설정에서 바꿀 수 있어요.</li>
           <li><b>조사 단계 구분</b> <span class="cx">[4~5, 9~10, 11~12차시]</span><br><span class="was">기존: 교내·학교 주변·가족 과제 자료가 한 지도에 섞임</span><br>변경: 우리 동네(북가좌동) 조사용으로 정리해, 출발 전에 🏘️ 우리 동네 / ✏️ 연습 중 하나를 골라요. 연습 기록은 결과에서 빠지고 선생님 메뉴에서 한 번에 지울 수 있어요.</li>
@@ -497,12 +527,15 @@ details.changes summary{cursor:pointer;font-weight:700}
   const gOf = r => gradeOf(+r.coverage || 0); // 예전 4단계 기록도 비율로 다시 계산
   // 교실에서 살펴보기를 마쳤는지 (예전 기록은 주변 환경이 있으면 마친 것으로 봐요)
   const isDone = r => r.done === true || (r.done == null && !!r.env);
+  const reasonDone = r => (r.reasons || []).length > 0 || !!r.why;
   // 주변 환경은 여러 개를 쉼표로 이어 저장해요 (예: "build,path")
   const envList = r => String((r && r.env) || "").split(",").map(x => x.trim()).filter(k => E[k]);
   const envText = r => envList(r).map(k => E[k].e + " " + E[k].l).join(", ");
   const DETAIL_KEYS = ["cells","coverage","types","other","butts","lidBlocked","env","memo","reasons","why"];
   const detailPart = r => Object.fromEntries(DETAIL_KEYS.filter(k => r[k] !== undefined).map(k => [k, r[k]]));
-  const COLS = 4, ROWS = 3;
+  const COLS = 4, ROWS = 4; // 막힘 정도 색칠 칸: 4×4 = 16칸
+  // 예전 기록은 4×3(12칸)이었어요. grid 값이 없으면 칠한 칸 번호로 짐작해요.
+  const rowsOf = r => r.grid === 16 || (r.cells || []).some(i => i >= 12) ? 4 : r.grid === 12 || r.grid == null ? 3 : ROWS;
   const groupEmoji = t => (GROUPS.find(g => g[0] === t) || [,"👥"])[1];
 
   const store = {
@@ -529,21 +562,26 @@ details.changes summary{cursor:pointer;font-weight:700}
   }
   /* ---------- 상태 ---------- */
   const state = { reports:new Map(), photoCache:new Map(), view:"survey", step:0, loaded:false, editId:null, teacher:false,
-    f:{ phase:"real", team:"all", grade:"all", env:"all", type:"all" }, hideColor:false };
+    f:{ phase:"real", team:"all", grade:"all", env:"all", type:"all" }, hideColor:false,
+    rsel:new Set(), rId:null, iFilter:{ team:null, status:"todo" }, lastMode:"survey" };
   let team = store.get("drain-group") || "";
   if (team && !GROUPS.some(g => g[0] === team)) team = "";
   const okPhase = k => PHASES.some(p => p[0] === k) ? k : "near";
   let phase = okPhase(store.get("drain-phase"));
   const newDraft = () => ({ photo:null, thumb:null, photoChanged:false, privacyOk:false, cells:new Set(), types:new Set(), butts:0, buttsTouched:false, lid:null, lat:null, lng:null, src:"", envs:new Set(), reasons:new Set() });
   let draft = newDraft();
-  const LAST_STEP = 6, DONE = 7;
+  const LAST_STEP = 5, DONE = 6;
 
   /* ---------- tabs ---------- */
-  document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => showView(t.dataset.view)));
+  document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => showView(t.dataset.view === "survey" ? state.lastMode : t.dataset.view)));
+  $("#modebar").onclick = e => { const b = e.target.closest("[data-mode]"); if (b && b.dataset.mode !== state.view) showView(b.dataset.mode); };
   function showView(v) {
     state.view = v;
-    document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.view === v)));
-    ["survey","map","results"].forEach(n => $("#view-" + n).classList.toggle("hide", n !== v));
+    const tabOf = v === "inspect" ? "survey" : v;
+    document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.view === tabOf)));
+    if (v === "survey" || v === "inspect") state.lastMode = v;
+    ["survey","inspect","map","results"].forEach(n => $("#view-" + n).classList.toggle("hide", n !== v));
+    if (v === "inspect") { showRList(); load(true); }
     updateNav();
     if (v === "map") { renderMap(true); load(); }
     if (v === "results") { renderResults(); load(); }
@@ -572,6 +610,10 @@ details.changes summary{cursor:pointer;font-weight:700}
     $("#wnav").classList.toggle("hide", !f);
     $("#prevBtn").style.visibility = state.step > 1 ? "visible" : "hidden";
     $("#nextBtn").innerHTML = state.step === LAST_STEP ? (state.editId ? "고친 내용 저장 💾" : "저장하기 💾") : "다음 ▶";
+    // '조사하기 / 원인 살펴보기' 버튼은 처음 화면·완료 화면·목록에서만 보여요
+    const home = (state.view === "survey" && (state.step === 0 || state.step === DONE) && !state.editId) || (state.view === "inspect" && !state.rId);
+    $("#modebar").classList.toggle("hide", !home);
+    $("#modebar").querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === state.view)));
   }
   function nudge(el, msg) { el.className = "say err"; el.textContent = msg; el.classList.remove("nudge"); void el.offsetWidth; el.classList.add("nudge"); }
 
@@ -609,14 +651,14 @@ details.changes summary{cursor:pointer;font-weight:700}
     el.onclick = ev => { const b = ev.target.closest(".tile"); if (!b) return; toggle(b.dataset.k); refresh(el, isOn); };
   }
   const refresh = (el, isOn) => el.querySelectorAll(".tile").forEach(b => b.setAttribute("aria-pressed", String(isOn(b.dataset.k))));
-  const typeOn = k => draft.types.has(k), envOn = k => draft.envs.has(k), reasonOn = k => draft.reasons.has(k);
+  const typeOn = k => draft.types.has(k), envOn = k => draft.envs.has(k), reasonOn = k => state.rsel.has(k);
   const syncTypeExtras = () => { $("#otherWrap").classList.toggle("hide", !draft.types.has("etc")); $("#buttWrap").classList.toggle("hide", !draft.types.has("butt")); };
   tiles($("#typeTiles"), TYPES, typeOn, k => { draft.types.has(k) ? draft.types.delete(k) : draft.types.add(k); syncTypeExtras(); });
   tiles($("#envTiles"), ENVS, envOn, k => { draft.envs.has(k) ? draft.envs.delete(k) : draft.envs.add(k); $("#envSay").textContent = ""; syncCounts(); });
-  tiles($("#reasonTiles"), REASONS, reasonOn, k => { draft.reasons.has(k) ? draft.reasons.delete(k) : draft.reasons.add(k); syncCounts(); });
+  tiles($("#reasonTiles"), REASONS, reasonOn, k => { state.rsel.has(k) ? state.rsel.delete(k) : state.rsel.add(k); syncCounts(); });
   function syncCounts() {
     $("#envCount").textContent = draft.envs.size ? `✔ ${draft.envs.size}곳 골랐어요` : "";
-    $("#reasonCount").textContent = draft.reasons.size ? `✔ 원인 ${draft.reasons.size}가지를 골랐어요` : "";
+    $("#reasonCount").textContent = state.rsel.size ? `✔ 원인 ${state.rsel.size}가지를 골랐어요` : "";
   }
   const syncLid = () => $("#lidTiles").querySelectorAll(".tile").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === draft.lid)));
   $("#lidTiles").onclick = ev => { const b = ev.target.closest(".tile"); if (!b) return; draft.lid = draft.lid === b.dataset.v ? null : b.dataset.v; syncLid(); };
@@ -751,7 +793,7 @@ details.changes summary{cursor:pointer;font-weight:700}
   const coverage = () => Math.round(draft.cells.size / (COLS*ROWS) * 100);
   function renderFace() {
     const g = GR[gradeOf(coverage())];
-    $("#faceBox").innerHTML = `<span class="e" aria-hidden="true">${g.e}</span><span><span class="t">${g.l}</span><br><span class="n">12칸 중 ${draft.cells.size}칸 (${coverage()}%)</span></span>`;
+    $("#faceBox").innerHTML = `<span class="e" aria-hidden="true">${g.e}</span><span><span class="t">${g.l}</span><br><span class="n">${COLS*ROWS}칸 중 ${draft.cells.size}칸 (${coverage()}%)</span></span>`;
   }
 
   /* ---------- maps ---------- */
@@ -909,11 +951,11 @@ details.changes summary{cursor:pointer;font-weight:700}
   async function save() {
     const btn = $("#nextBtn"), say = $("#photoSay");
     // 사진·위치·막힌 정도·쓰레기·주변·원인을 한 번에 저장해요
-    const cov = coverage();
+    const cov = coverage(), old = state.editId ? (state.reports.get(state.editId) || {}) : null;
     const rec = { phase, team, lat: draft.lat, lng: draft.lng, locSource: draft.src, place: $("#placeInput").value.trim(),
-      cells: [...draft.cells], coverage: cov, types: [...draft.types], other: draft.types.has("etc") ? $("#otherInput").value.trim() : "",
+      cells: [...draft.cells], grid: COLS*ROWS, coverage: cov, types: [...draft.types], other: draft.types.has("etc") ? $("#otherInput").value.trim() : "",
       butts: draft.types.has("butt") && draft.buttsTouched ? draft.butts : null, lidBlocked: draft.lid === "yes",
-      env: [...draft.envs].join(","), memo: $("#memoInput").value.trim(), reasons: [...draft.reasons], why: $("#whyInput").value.trim(), done: true };
+      env: [...draft.envs].join(","), memo: $("#memoInput").value.trim(), reasons: old ? (old.reasons || []) : [], why: old ? (old.why || "") : "", done: true }; // 원인은 교실 '원인 살펴보기'에서 적어요
     if (!state.editId || draft.photoChanged) { rec.photo = draft.photo; rec.thumb = draft.thumb; }
     const editing = state.editId, kind = editing ? "update" : "save";
     btn.disabled = true; btn.textContent = "저장 중… ⏳";
@@ -924,10 +966,10 @@ details.changes summary{cursor:pointer;font-weight:700}
       state.reports.set(id, { ...(state.reports.get(id) || { createdAt: Date.now(), no: res.no }), id, ...rec, photo: undefined, thumb: draft.thumb, mine: true });
       if (draft.photoChanged) state.photoCache.delete(id);
     } catch (e) {
-      if (e.server) { btn.disabled = false; updateNav(); return nudge($("#saveSay"), e.message || "저장이 안 됐어요. 다시 눌러요."); }
+      if (e.server) { btn.disabled = false; updateNav(); return nudge($("#envSay"), e.message || "저장이 안 됐어요. 다시 눌러요."); }
       // 인터넷이 끊겼을 때: 기기에 보관했다가 연결되면 자동으로 보내요
       const box = outbox(); box.push({ kind, id: editing, record: rec, at: Date.now() });
-      if (!setOutbox(box)) { btn.disabled = false; updateNav(); return nudge($("#saveSay"), "인터넷이 안 되고 기기 저장 공간도 부족해요. 선생님께 알려 주세요."); }
+      if (!setOutbox(box)) { btn.disabled = false; updateNav(); return nudge($("#envSay"), "인터넷이 안 되고 기기 저장 공간도 부족해요. 선생님께 알려 주세요."); }
       queued = true;
       if (!editing) { const tid = "q:" + uid(); state.reports.set(tid, { id: tid, createdAt: Date.now(), ...rec, photo: undefined, thumb: draft.thumb, mine: true, pending: true }); }
     }
@@ -947,8 +989,8 @@ details.changes summary{cursor:pointer;font-weight:700}
   }
   function resetDraft(keepStore) {
     draft = newDraft(); state.editId = null;
-    ["#otherInput","#placeInput","#memoInput","#whyInput"].forEach(s => $(s).value = "");
-    $("#shot").innerHTML = ""; ["#photoSay","#locSay","#saveSay","#envSay"].forEach(s => { $(s).textContent = ""; $(s).className = "say"; });
+    ["#otherInput","#placeInput","#memoInput"].forEach(s => $(s).value = "");
+    $("#shot").innerHTML = ""; ["#photoSay","#locSay","#envSay"].forEach(s => { $(s).textContent = ""; $(s).className = "say"; });
     $("#whereBox").classList.add("hide"); $("#dupWarn").classList.add("hide"); $("#buttOut").textContent = "0";
     syncAllTiles(); renderPrivacy();
     if (pick.marker) { pick.marker.remove(); pick.marker = null; }
@@ -979,6 +1021,9 @@ details.changes summary{cursor:pointer;font-weight:700}
     const q = outbox().length;
     const rsAll = filtered(allReports(), true), todo = rsAll.filter(r => !isDone(r)).length;
     $("#sync").textContent = `${rsAll.length}곳 조사함` + (q ? ` · 📦 보낼 기록 ${q}개` : "");
+    const rtodo = rsAll.filter(r => isDone(r) && !reasonDone(r)).length;
+    $("#modeTodo").textContent = rtodo ? `교실에서 · ${rtodo}곳 생각할 차례` : "교실에서 · 왜 막혔을까?";
+    if (state.view === "inspect" && !state.rId && $("#rDone").classList.contains("hide")) renderRList();
     if (state.view === "map") renderMap(false);
     if (state.view === "results") renderResults();
     if (state.view === "survey" && state.step === 2) checkDup();
@@ -1080,11 +1125,13 @@ details.changes summary{cursor:pointer;font-weight:700}
     const r = state.reports.get(id); if (!r) return;
     const dlg = $("#detail"), body = $("#dlgBody"), g = GR[gOf(r)];
     const own = !r.pending && (r.mine || state.teacher), done = isDone(r);
-    const btns = own ? [`<button type="button" class="edit" id="dlgEdit">${done ? "✏️ 고치기" : "✏️ 막힌 정도 채우기"}</button>`, `<button type="button" class="del" id="dlgDel">🗑️ 지우기</button>`] : [];
+    const btns = [];
+    if (!r.pending && done && (!reasonDone(r) || own)) btns.push(`<button type="button" class="edit" id="dlgReason">🤔 ${reasonDone(r) ? "원인 고치기" : "원인 생각하기"}</button>`);
+    if (own) btns.push(`<button type="button" class="edit" id="dlgEdit">${done ? "✏️ 고치기" : "✏️ 막힌 정도 채우기"}</button>`, `<button type="button" class="del" id="dlgDel">🗑️ 지우기</button>`);
     body.innerHTML = `
       <div class="dlg-head"><h3 id="dlgTitle">${numOf(id)}번 빗물받이</h3><button class="close" type="button" aria-label="닫기">✕</button></div>
       <div id="dlgPhoto">${r.thumb ? `<img src="${esc(r.thumb)}" alt="빗물받이 사진" style="width:100%;border-radius:16px;filter:blur(2px)">` : ""}</div>
-      ${done ? `<div class="face"><span class="e" aria-hidden="true">${g.e}</span><span><span class="t">${g.l}</span><br><span class="n">12칸 중 ${(r.cells||[]).length}칸 (${+r.coverage || 0}%)</span></span></div>`
+      ${done ? `<div class="face"><span class="e" aria-hidden="true">${g.e}</span><span><span class="t">${g.l}</span><br><span class="n">${COLS*rowsOf(r)}칸 중 ${(r.cells||[]).length}칸 (${+r.coverage || 0}%)</span></span></div>`
         : `<div class="face"><span class="e" aria-hidden="true">🔍</span><span><span class="t">막힌 정도를 아직 기록하지 않았어요</span><br><span class="n">✏️ 고치기로 채울 수 있어요</span></span></div>`}
       <ul class="facts">
         ${done ? `<li><span class="e" aria-hidden="true">🗑️</span><span>${esc(typeText(r)) || "쓰레기 없음"}${r.butts != null ? ` (꽁초 ${r.butts}개)` : ""}</span></li>` : ""}
@@ -1098,6 +1145,7 @@ details.changes summary{cursor:pointer;font-weight:700}
       ${r.pending ? `<p class="small">인터넷이 되면 보내져요.</p>` : !own ? `<p class="small">이 기록을 만든 기기(모둠)나 선생님만 고칠 수 있어요.</p>` : ""}`;
     body.querySelector(".close").onclick = () => dlg.close();
     dlg.onclick = e => { if (e.target === dlg) dlg.close(); };
+    if ($("#dlgReason")) $("#dlgReason").onclick = () => { dlg.close(); showView("inspect"); openReason(id); };
     if (own) {
       $("#dlgEdit").onclick = async () => { dlg.close(); await startEdit(r); };
       $("#dlgDel").onclick = async () => {
@@ -1110,9 +1158,10 @@ details.changes summary{cursor:pointer;font-weight:700}
     const full = await fullPhoto(r);
     const ph = $("#dlgPhoto"); if (!ph || !dlg.open) return;
     const on = new Set(done ? (r.cells || []) : []); let cells = "";
-    for (let i = 0; i < COLS*ROWS; i++) cells += `<div class="cell${on.has(i) ? " on" : ""}" style="cursor:default"></div>`;
+    const rr = rowsOf(r);
+    for (let i = 0; i < COLS*rr; i++) cells += `<div class="cell${on.has(i) ? " on" : ""}" style="cursor:default"></div>`;
     const src = full || r.thumb; if (!src) return;
-    ph.innerHTML = `<div class="grate-wrap" style="touch-action:auto"><img src="${esc(src)}" alt="빗물받이 사진"><div class="grate" style="grid-template-columns:repeat(${COLS},1fr);grid-template-rows:repeat(${ROWS},1fr)">${cells}</div></div>`;
+    ph.innerHTML = `<div class="grate-wrap" style="touch-action:auto"><img src="${esc(src)}" alt="빗물받이 사진"><div class="grate" style="grid-template-columns:repeat(${COLS},1fr);grid-template-rows:repeat(${rr},1fr)">${cells}</div></div>`;
   }
   async function fullPhoto(r) {
     let full = state.photoCache.get(r.id) || "";
@@ -1127,8 +1176,8 @@ details.changes summary{cursor:pointer;font-weight:700}
     Object.assign(draft, { photo: full || r.thumb || null, thumb: r.thumb || null, photoChanged: false, privacyOk: true,
       lat: +r.lat, lng: +r.lng, src: r.locSource || "지도",
       cells: new Set(r.cells || []), types: new Set(r.types || []), butts: r.butts ?? 0, buttsTouched: r.butts != null,
-      lid: isDone(r) ? (r.lidBlocked ? "yes" : "no") : null, envs: new Set(envList(r)), reasons: new Set(r.reasons || []) });
-    $("#placeInput").value = r.place || ""; $("#otherInput").value = r.other || ""; $("#memoInput").value = r.memo || ""; $("#whyInput").value = r.why || "";
+      lid: isDone(r) ? (r.lidBlocked ? "yes" : "no") : null, envs: new Set(envList(r)) });
+    $("#placeInput").value = r.place || ""; $("#otherInput").value = r.other || ""; $("#memoInput").value = r.memo || "";
     $("#buttOut").textContent = draft.butts; syncAllTiles();
     $("#whereBox").classList.remove("hide"); $("#whereText").textContent = "저장된 자리에 📍가 있어요. 틀렸으면 지도를 눌러 고쳐요.";
     syncAllTiles();
@@ -1136,6 +1185,94 @@ details.changes summary{cursor:pointer;font-weight:700}
   }
 
 
+
+  /* ---------- 🤔 교실에서 원인 살펴보기 ---------- */
+  function rBase() {
+    const f = state.iFilter;
+    if (f.team === null) f.team = team || "all";
+    return filtered(allReports(), true).filter(r => !r.pending && isDone(r) && (f.team === "all" || r.team === f.team));
+  }
+  function showRList() {
+    state.rId = null;
+    $("#iList").classList.remove("hide"); $("#rView").classList.add("hide"); $("#rDone").classList.add("hide");
+    renderRList(); updateNav(); window.scrollTo({top:0});
+  }
+  function renderRList() {
+    const f = state.iFilter, base = rBase();
+    const todoN = base.filter(r => !reasonDone(r)).length, doneN = base.length - todoN;
+    const list = base.filter(r => f.status === "todo" ? !reasonDone(r) : reasonDone(r)).reverse();
+    $("#iFilter").innerHTML = `<label>모둠<select id="iTeam">${opts([["all","모든 모둠"], ...GROUPS.map(([g,e]) => [g, e + " " + g])], f.team)}</select></label>
+      <div class="iseg" role="group" aria-label="보기"><button type="button" data-s="todo" aria-pressed="${f.status === "todo"}">🤔 생각할 차례 ${todoN}</button><button type="button" data-s="done" aria-pressed="${f.status === "done"}">✅ 다 생각한 것 ${doneN}</button></div>`;
+    $("#iTeam").onchange = e => { f.team = e.target.value; renderRList(); };
+    $("#iFilter").querySelector(".iseg").onclick = e => { const b = e.target.closest("button"); if (b) { f.status = b.dataset.s; renderRList(); } };
+    $("#iItems").innerHTML = !state.loaded ? `<div class="empty">불러오는 중이에요… ⏳</div>`
+      : list.length ? list.map(r => `
+        <button type="button" class="item" data-id="${esc(r.id)}">
+          ${r.thumb ? `<img src="${esc(r.thumb)}" alt="" loading="lazy">` : `<span class="ph"></span>`}
+          <span><span class="t">${numOf(r.id)}번 ${GR[gOf(r)].e} ${GR[gOf(r)].l}</span>
+          <span class="s">${esc(r.place || "장소 설명 없음")}${r.team ? " · " + groupEmoji(r.team) + " " + esc(r.team) : ""}</span>
+          <span class="s">${reasonDone(r) ? "🤔 " + (esc(reasonText(r)) || "까닭만 적음") : "아직 원인을 생각하지 않았어요"}</span></span>
+        </button>`).join("")
+      : `<div class="empty">${f.status === "todo" ? (base.length ? "🎉 모든 빗물받이의 원인을 생각해 봤어요!" : "아직 조사한 빗물받이가 없어요. 📸 조사하기부터 해요.") : "아직 원인을 적은 빗물받이가 없어요."}</div>`;
+    $("#iItems").onclick = e => {
+      const b = e.target.closest("[data-id]"); if (!b) return;
+      const r = state.reports.get(b.dataset.id); if (!r) return;
+      if (reasonDone(r) && !(r.mine || state.teacher)) return openDetail(r.id);
+      openReason(r.id);
+    };
+  }
+  async function openReason(id) {
+    const r = state.reports.get(id); if (!r) return;
+    state.rId = id;
+    state.rsel = new Set(r.reasons || []); $("#whyInput").value = r.why || "";
+    $("#saveSay").textContent = ""; $("#saveSay").className = "say";
+    refresh($("#reasonTiles"), reasonOn); syncCounts();
+    $("#rHeadImg").src = r.thumb || ""; $("#rHeadImg").classList.toggle("hide", !r.thumb);
+    $("#rHeadText").textContent = `${numOf(id)}번 빗물받이`;
+    const g = GR[gOf(r)];
+    $("#rFacts").innerHTML = `
+      <li><span class="e" aria-hidden="true">${g.e}</span><span><b>${g.l}</b> (${COLS*rowsOf(r)}칸 중 ${(r.cells||[]).length}칸, ${+r.coverage || 0}%)</span></li>
+      <li><span class="e" aria-hidden="true">🗑️</span><span>${esc(typeText(r)) || "쓰레기 없음"}${r.butts != null ? ` (꽁초 ${r.butts}개)` : ""}${r.lidBlocked ? " · 덮개로 덮여 있었음" : ""}</span></li>
+      <li><span class="e" aria-hidden="true">📍</span><span>${esc(r.place || "장소 설명 없음")}${envList(r).length ? " · " + envText(r) : ""}</span></li>
+      ${r.memo ? `<li><span class="e" aria-hidden="true">✏️</span><span>${esc(r.memo)}</span></li>` : ""}`;
+    $("#rPhoto").innerHTML = r.thumb ? `<img src="${esc(r.thumb)}" alt="빗물받이 사진" style="width:100%;border-radius:16px;filter:blur(2px)">` : "";
+    $("#iList").classList.add("hide"); $("#rDone").classList.add("hide"); $("#rView").classList.remove("hide");
+    updateNav(); window.scrollTo({top:0});
+    const full = await fullPhoto(r);
+    if (state.rId !== id) return;
+    const src = full || r.thumb; if (!src) return;
+    const on = new Set(r.cells || []), rr = rowsOf(r); let cells = "";
+    for (let i = 0; i < COLS*rr; i++) cells += `<div class="cell${on.has(i) ? " on" : ""}" style="cursor:default"></div>`;
+    $("#rPhoto").innerHTML = `<div class="grate-wrap" style="touch-action:auto"><img src="${esc(src)}" alt="빗물받이 사진"><div class="grate" style="grid-template-columns:repeat(${COLS},1fr);grid-template-rows:repeat(${rr},1fr)">${cells}</div></div>`;
+  }
+  $("#rBack").onclick = () => showRList();
+  $("#rListBtn").onclick = () => showRList();
+  $("#rNextBtn").onclick = () => { const nx = rBase().find(r => !reasonDone(r)); nx ? openReason(nx.id) : showRList(); };
+  $("#rSave").onclick = async () => {
+    const id = state.rId, r = state.reports.get(id), say = $("#saveSay"), btn = $("#rSave"); if (!r) return showRList();
+    if (!state.rsel.size && !$("#whyInput").value.trim()) return nudge(say, "생각한 원인을 하나 이상 고르거나, 까닭을 적어요.");
+    const rec = { reasons: [...state.rsel], why: $("#whyInput").value.trim() };
+    btn.disabled = true; btn.textContent = "저장 중… ⏳";
+    let queued = false;
+    try { await api("reason", { id, record: rec }); }
+    catch (e) {
+      if (e.server) { btn.disabled = false; btn.textContent = "저장하기 💾"; return nudge(say, e.message || "저장이 안 됐어요. 다시 눌러요."); }
+      const box = outbox(); box.push({ kind: "reason", id, record: rec, at: Date.now() });
+      if (!setOutbox(box)) { btn.disabled = false; btn.textContent = "저장하기 💾"; return nudge(say, "인터넷이 안 되고 기기 저장 공간도 부족해요. 선생님께 알려 주세요."); }
+      queued = true;
+    }
+    btn.disabled = false; btn.textContent = "저장하기 💾";
+    state.reports.set(id, { ...r, ...rec });
+    state.rId = null;
+    const nx = rBase().find(x => !reasonDone(x));
+    $("#rDoneEmoji").textContent = queued ? "📦" : "✅";
+    $("#rDoneTitle").textContent = queued ? "기기에 보관했어요" : "저장했어요!";
+    $("#rDoneText").textContent = queued ? "인터넷이 다시 되면 저절로 보내요." : `${numOf(id)}번 빗물받이의 원인을 ${rec.reasons.length ? rec.reasons.length + "가지 " : ""}적었어요.` + (nx ? " 다음 빗물받이도 생각해 볼까요?" : " 모든 빗물받이의 원인을 생각해 봤어요! 🎉");
+    $("#rNextBtn").classList.toggle("hide", !nx);
+    $("#rView").classList.add("hide"); $("#rDone").classList.remove("hide");
+    updateNav(); onData(); window.scrollTo({top:0});
+    if (!queued) load(true);
+  };
   let envMap = null, envMarker = null;
   function showEnvMap() {
     const el = $("#envMap");
