@@ -298,14 +298,14 @@ details.changes summary{cursor:pointer;font-weight:700}
       <ul class="promise">
         <li><span class="e" aria-hidden="true">🚸</span>인도로만 다니고 찻길로 내려가지 않아요. 찻길 쪽 빗물받이는 인도에서 찍어요.</li>
         <li><span class="e" aria-hidden="true">🚦</span>길을 건널 때는 횡단보도에서 초록불에만 건너요.</li>
-        <li><span class="e" aria-hidden="true">👀</span>선생님·어른과 함께 다니고, 모둠 친구와 떨어지지 않아요.</li>
+        <li><span class="e" aria-hidden="true">👀</span>선생님이나 가족 어른과 함께 다니고, 함께 간 사람과 떨어지지 않아요.</li>
         <li><span class="e" aria-hidden="true">✋</span>빗물받이 뚜껑이나 쓰레기는 맨손으로 만지지 않아요.</li>
         <li><span class="e" aria-hidden="true">🙈</span>사람 얼굴, 자동차 번호판, 집 안은 찍지 않아요.</li>
         <li><span class="e" aria-hidden="true">🚗</span>골목에서 나오는 차와 공사장을 조심하고, 공사장 울타리 안에는 들어가지 않아요.</li>
         <li><span class="e" aria-hidden="true">🏪</span>가게 앞에서는 손님과 지나가는 사람을 막지 않게 비켜서 찍어요.</li>
       </ul>
       <div class="mode-note"><span class="e" aria-hidden="true">📸🔍</span><span>밖에서는 빗물받이를 <b>찍고</b> <b>위치 → 막힌 정도 → 쓰레기 → 주변</b>까지 기록해요. <b>왜 막혔는지</b>는 교실에서 위쪽의 <b>🤔 원인 살펴보기</b>로 함께 생각해요.</span></div>
-      <h3 class="sec-h">오늘은 어디를 조사해요?</h3>
+      <h3 class="sec-h">오늘의 조사는 누구와 함께해요?</h3>
       <div class="tiles phase" id="phaseTiles" style="margin-bottom:18px"></div>
       <h3 class="sec-h">우리는 몇 모둠이에요?</h3>
       <div class="tiles" id="groupTiles" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px"></div>
@@ -413,8 +413,13 @@ details.changes summary{cursor:pointer;font-weight:700}
         <ul class="facts" id="rFacts"></ul>
       </div>
       <div class="card">
-      <h2 class="q">왜 이렇게 막혔을까?</h2>
-      <p class="sub">막힌 원인은 <b>한 가지가 아닐 수도</b> 있어요. 내 생각과 맞는 것을 <b>모두</b> 골라요.</p>
+      <h3 class="sec-h">이 빗물받이는 막혀 있었나요?</h3>
+      <div class="yn" id="clogTiles" style="margin-bottom:18px">
+        <button type="button" class="tile" data-v="clog" aria-pressed="false"><span class="e" aria-hidden="true">😟</span><span class="l">막혀 있었어요</span></button>
+        <button type="button" class="tile" data-v="clear" aria-pressed="false"><span class="e" aria-hidden="true">😀</span><span class="l">막혀 있지 않았어요</span></button>
+      </div>
+      <h2 class="q" id="rTitle">왜 이렇게 막혔을까?</h2>
+      <p class="sub" id="rSub">막힌 원인은 <b>한 가지가 아닐 수도</b> 있어요. 내 생각과 맞는 것을 <b>모두</b> 골라요.</p>
       <p class="tip">💡 <b>본 것</b>(사실)과 <b>내 생각</b>(추측)은 달라요. 아래 칸에는 그렇게 생각한 까닭이 되는 <b>본 것</b>을 적어요.</p>
       <div class="tiles four" id="reasonTiles"></div>
       <p class="pickcount" id="reasonCount" aria-live="polite"></p>
@@ -448,7 +453,7 @@ details.changes summary{cursor:pointer;font-weight:700}
 
   <section id="view-results" class="hide" aria-label="우리 반 결과">
     <div class="rbar">
-      <label style="display:flex;gap:8px;align-items:center;font-weight:700">보기 <select id="resPhase" aria-label="조사 단계"></select></label>
+      <label style="display:flex;gap:8px;align-items:center;font-weight:700">보기 <select id="resPhase" aria-label="누구와 조사했는지"></select></label>
       <div class="r"><button type="button" class="sbtn" id="csvBtn">⬇️ 표로 내려받기(CSV)</button><button type="button" class="sbtn" data-refresh>🔄 새로 보기</button></div>
     </div>
     <div id="resultsBody"></div>
@@ -462,7 +467,7 @@ details.changes summary{cursor:pointer;font-weight:700}
           <li><b>밖에서 조사, 교실에서 원인 살펴보기</b> <span class="cx">[4~5, 9~10, 11~12차시]</span><br><span class="was">기존: 원인까지 밖에서 한 번에 기록</span><br>변경: 밖에서는 사진 → 위치 → 막힌 정도 → 쓰레기 → 주변(여러 개)까지 기록해요. 교실에서 📸 조사하기 탭 위쪽의 🤔 원인 살펴보기를 눌러, 사진과 기록을 보며 원인(여러 개)과 까닭을 적어요. 원인이 아직 없는 기록은 어느 기기에서나 적을 수 있어요.</li>
           <li><b>기록 고치기·지우기</b> <span class="cx">[4~5, 9~10차시 활동2]</span><br><span class="was">기존: 저장만 되고 고칠 수 없음</span><br>변경: 기록을 눌러 ✏️ 고치기 / 🗑️ 지우기. 만든 기기(모둠)와 선생님만 할 수 있어요. 지운 기록은 시트에 남아 되살릴 수 있어요.</li>
           <li><b>막힘 상태 3단계로 통일</b> <span class="cx">[2~3, 4~5차시]</span><br><span class="was">기존: 깨끗해요·조금 있어요·많이 쌓였어요·꽉 막혔어요 (4단계)</span><br>변경: 😀 원활해요 · 😟 일부 막혔어요 · 😱 많이 막혔어요. 과정안의 '원활함/일부 막힘/많이 막힘'과 같은 말이에요. 기준(색칠 25%·55%)은 설정에서 바꿀 수 있어요.</li>
-          <li><b>조사 단계 구분</b> <span class="cx">[4~5, 9~10, 11~12차시]</span><br><span class="was">기존: 교내·학교 주변·가족 과제 자료가 한 지도에 섞임</span><br>변경: 우리 동네(북가좌동) 조사용으로 정리해, 출발 전에 🏘️ 우리 동네 / ✏️ 연습 중 하나를 골라요. 연습 기록은 결과에서 빠지고 선생님 메뉴에서 한 번에 지울 수 있어요.</li>
+          <li><b>수업과 가족 과제 구분</b> <span class="cx">[4~5, 9~10차시]</span><br><span class="was">기존: 수업 시간 조사와 과제가 한 자료에 섞임</span><br>변경: 첫 화면에서 👫 모둠 친구들과 함께해요 / 👨‍👩‍👧 가족과 함께해요 중 하나를 골라요. 지도·결과의 "누구와" 보기와 CSV에서 수업 시간과 가족 과제를 나눠 볼 수 있어요.</li>
           <li><b>연습 모드</b> <span class="cx">[2~3차시 활동3]</span><br><span class="was">기존: 예시 입력도 실제 자료에 섞임</span><br>변경: '✏️ 연습' 기록은 결과에서 빠지고, 선생님이 한 번에 지울 수 있어요.</li>
           <li><b>4학년 새싹반 전용</b> <span class="cx">[전 차시]</span><br><span class="was">기존: 모든 반이 한 자료를 함께 씀, 모둠 3개 고정</span><br>변경: 기록은 4학년 새싹반 자료로만 모여요. 모둠 수는 6개이고, 주소 끝에 <code>?groups=4</code>처럼 붙여 바꿀 수 있어요.</li>
           <li><b>원인 추론 단계 추가</b> <span class="cx">[1, 6~7, 11~12차시]</span><br><span class="was">기존: 메모 칸만 있음</span><br>변경: '왜 이렇게 되었을까?' 단계에서 생각한 원인을 고르고, 그렇게 생각한 까닭(본 것)을 적어요. 사실과 추측을 나누어 기록하는 연습이 되고, 결과 화면에서 원인별로 모아 볼 수 있어요.</li>
@@ -511,8 +516,9 @@ details.changes summary{cursor:pointer;font-weight:700}
   const GROUP_EMOJI = ["🐬","🦊","🐢","🦁","🐼","🐸","🦉","🐝"];
   const nGroups = Math.max(1, Math.min(8, parseInt(qs.get("groups"), 10) || GROUP_COUNT));
   const GROUPS = GROUP_EMOJI.slice(0, nGroups).map((e, i) => [(i + 1) + "모둠", e]);
-  const PHASES = [["near","🏘️","우리 동네 (북가좌동)"],["practice","✏️","연습"]];        // 출발 전에 고르는 조사 장소
-  const PHASES_ALL = [...PHASES, ["school","🏫","학교 안"]];                          // 예전 '학교 안' 기록도 이름이 보이게
+  // 누구와 조사했나요? 수업 시간(모둠)과 가족 과제를 나눠 모아요. [키, 그림, 결과에 보이는 이름, 첫 화면 버튼 글]
+  const PHASES = [["near","👫","수업 시간 (모둠)","모둠 친구들과 함께해요"],["family","👨‍👩‍👧","가족 과제","가족과 함께해요"]];
+  const PHASES_ALL = [...PHASES, ["practice","✏️","연습"], ["school","🏫","학교 안"]];  // 예전 기록도 이름이 보이게
   const P = Object.fromEntries(PHASES_ALL.map(([k,e,l]) => [k,{e,l}]));
   const TYPES = [["butt","🚬","담배꽁초"],["leaf","🍂","낙엽·나뭇가지"],["vinyl","🛍️","비닐·과자봉지"],["plastic","🥤","컵·캔·병"],["paper","📄","종이·전단지"],["soil","🟫","흙·모래"],["food","🍙","음식물"],["debris","🧱","공사 자재·시멘트 조각"],["etc","❓","기타"]];
   const T = Object.fromEntries(TYPES.map(([k,e,l]) => [k,{e,l}]));
@@ -520,7 +526,10 @@ details.changes summary{cursor:pointer;font-weight:700}
   const ENVS_OLD = [["garden","🌳","화단·나무 옆"],["door","🚪","건물 입구 옆"],["path","🚶","학생들이 다니는 길"],["gate","🏫","교문 근처"]]; // 예전 '학교 안' 기록용
   const E = Object.fromEntries([...ENVS, ...ENVS_OLD].map(([k,e,l]) => [k,{e,l}]));
   const REASONS = [["tree","🌳","나무·화단이 가까워서"],["people","🚶","사람이 많이 다녀서"],["shop","🏪","가게·식당이 가까워서"],["smoke","🚬","담배 피우는 사람이 많아서"],["build","🏗️","공사장 흙·먼지가 쓸려 와서"],["bin","🗑️","쓰레기통이 없어서"],["slope","⛰️","비탈이라 흙·물이 모여서"],["cover","🙅","덮개로 덮여 있어서"],["unknown","🤔","잘 모르겠어요"],["etc","✏️","다른 생각"]];
-  const R = Object.fromEntries(REASONS.map(([k,e,l]) => [k,{e,l}]));
+  // 막혀 있지 않은 빗물받이: 왜 깨끗할까?
+  const CLEAN_REASONS = [["c_clean","🧹","누군가 자주 청소해서"],["c_bin","🗑️","근처에 쓰레기통이 있어서"],["c_few","🚶","지나다니는 사람이 적어서"],["c_notree","🌿","주변에 나무·흙이 적어서"],["c_rain","🌧️","최근 비에 쓸려 내려가서"],["c_open","🔲","덮개 없이 잘 열려 있어서"],["unknown","🤔","잘 모르겠어요"],["etc","✏️","다른 생각"]];
+  const R = Object.fromEntries([...REASONS, ...CLEAN_REASONS, ["notclog","😀","막혀 있지 않았어요"]].map(([k,e,l]) => [k,{e,l}]));
+  const isClear = r => (r.reasons || []).includes("notclog");
   // 상태 3단계 — 과정안(원활함 / 일부 막힘 / 많이 막힘)과 같은 말로 통일
   const GR = [{e:"😀",l:"원활해요",c:"g0"},{e:"😟",l:"일부 막혔어요",c:"g2"},{e:"😱",l:"많이 막혔어요",c:"g3"}];
   const gradeOf = c => c < GRADE_CUT[0] ? 0 : c < GRADE_CUT[1] ? 1 : 2;
@@ -563,7 +572,7 @@ details.changes summary{cursor:pointer;font-weight:700}
   /* ---------- 상태 ---------- */
   const state = { reports:new Map(), photoCache:new Map(), view:"survey", step:0, loaded:false, editId:null, teacher:false,
     f:{ phase:"real", team:"all", grade:"all", env:"all", type:"all" }, hideColor:false,
-    rsel:new Set(), rId:null, iFilter:{ team:null, status:"todo" }, lastMode:"survey" };
+    rsel:new Set(), rclear:false, rId:null, iFilter:{ team:null, status:"todo" }, lastMode:"survey" };
   let team = store.get("drain-group") || "";
   if (team && !GROUPS.some(g => g[0] === team)) team = "";
   const okPhase = k => PHASES.some(p => p[0] === k) ? k : "near";
@@ -618,7 +627,7 @@ details.changes summary{cursor:pointer;font-weight:700}
   function nudge(el, msg) { el.className = "say err"; el.textContent = msg; el.classList.remove("nudge"); void el.offsetWidth; el.classList.add("nudge"); }
 
   function renderStart() {
-    $("#phaseTiles").innerHTML = PHASES.map(([k,e,l]) => `<button type="button" class="tile" data-k="${k}" aria-pressed="${phase === k}"><span class="e" aria-hidden="true">${e}</span><span class="l">${l}</span></button>`).join("");
+    $("#phaseTiles").innerHTML = PHASES.map(([k,e,l,t]) => `<button type="button" class="tile" data-k="${k}" aria-pressed="${phase === k}"><span class="e" aria-hidden="true">${e}</span><span class="l">${t || l}</span></button>`).join("");
     $("#groupTiles").innerHTML = GROUPS.map(([n,e]) => `<button type="button" class="tile" data-k="${n}" aria-pressed="${team === n}"><span class="e" aria-hidden="true">${e}</span><span class="l">${n}</span></button>`).join("");
     $("#groupBadge").textContent = `${CLASS_LABEL} · ` + (team ? groupEmoji(team) + " " + team + " · " : "");
   }
@@ -655,10 +664,26 @@ details.changes summary{cursor:pointer;font-weight:700}
   const syncTypeExtras = () => { $("#otherWrap").classList.toggle("hide", !draft.types.has("etc")); $("#buttWrap").classList.toggle("hide", !draft.types.has("butt")); };
   tiles($("#typeTiles"), TYPES, typeOn, k => { draft.types.has(k) ? draft.types.delete(k) : draft.types.add(k); syncTypeExtras(); });
   tiles($("#envTiles"), ENVS, envOn, k => { draft.envs.has(k) ? draft.envs.delete(k) : draft.envs.add(k); $("#envSay").textContent = ""; syncCounts(); });
-  tiles($("#reasonTiles"), REASONS, reasonOn, k => { state.rsel.has(k) ? state.rsel.delete(k) : state.rsel.add(k); syncCounts(); });
+  function renderReasonSet() {
+    const clear = state.rclear;
+    tiles($("#reasonTiles"), clear ? CLEAN_REASONS : REASONS, reasonOn, k => { state.rsel.has(k) ? state.rsel.delete(k) : state.rsel.add(k); syncCounts(); });
+    $("#clogTiles").querySelectorAll(".tile").forEach(t => t.setAttribute("aria-pressed", String(t.dataset.v === (clear ? "clear" : "clog"))));
+    $("#rTitle").textContent = clear ? "왜 막혀 있지 않을까?" : "왜 이렇게 막혔을까?";
+    $("#rSub").innerHTML = clear ? "깨끗한 까닭도 <b>여러 가지</b>일 수 있어요. 내 생각과 맞는 것을 <b>모두</b> 골라요."
+      : "막힌 원인은 <b>한 가지가 아닐 수도</b> 있어요. 내 생각과 맞는 것을 <b>모두</b> 골라요.";
+    $("#whyInput").placeholder = clear ? "예: 빗물받이 주변에 쓰레기가 하나도 없고, 바로 옆에 쓰레기통이 있었어요"
+      : "예: 빗물받이 바로 옆에 큰 나무가 있고 낙엽이 많이 쌓여 있었어요";
+    syncCounts();
+  }
+  $("#clogTiles").onclick = ev => {
+    const b = ev.target.closest(".tile"); if (!b) return;
+    const clear = b.dataset.v === "clear"; if (clear === state.rclear) return;
+    state.rclear = clear; state.rsel = new Set(); renderReasonSet();
+  };
+  renderReasonSet();
   function syncCounts() {
     $("#envCount").textContent = draft.envs.size ? `✔ ${draft.envs.size}곳 골랐어요` : "";
-    $("#reasonCount").textContent = state.rsel.size ? `✔ 원인 ${state.rsel.size}가지를 골랐어요` : "";
+    $("#reasonCount").textContent = state.rsel.size ? `✔ ${state.rclear ? "까닭" : "원인"} ${state.rsel.size}가지를 골랐어요` : "";
   }
   const syncLid = () => $("#lidTiles").querySelectorAll(".tile").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === draft.lid)));
   $("#lidTiles").onclick = ev => { const b = ev.target.closest(".tile"); if (!b) return; draft.lid = draft.lid === b.dataset.v ? null : b.dataset.v; syncLid(); };
@@ -850,7 +875,7 @@ details.changes summary{cursor:pointer;font-weight:700}
   }
 
   const FILTERS = [
-    ["phase", "조사 단계", [["real","연습 빼고 모두"], ["all","연습까지 모두"], ...PHASES_ALL.map(([k,e,l]) => [k, e + " " + l])]],
+    ["phase", "누구와", [["real","수업과 과제 모두"], ["all","예전 연습 기록까지"], ...PHASES_ALL.map(([k,e,l]) => [k, e + " " + l])]],
     ["team", "모둠", [["all","모든 모둠"], ...GROUPS.map(([g,e]) => [g, e + " " + g])]],
     ["grade", "상태", [["all","모든 상태"], ...GR.map((g,i) => [String(i), g.e + " " + g.l]), ["todo","🔍 살펴보기 전"]]],
     ["env", "주변", [["all","모든 곳"], ...ENVS.map(([k,e,l]) => [k, e + " " + l])]],
@@ -983,7 +1008,7 @@ details.changes summary{cursor:pointer;font-weight:700}
     $("#doneText").textContent = queued
       ? "지금은 인터넷이 안 돼요. 기록은 이 기기에 잘 보관했고, 인터넷이 다시 되면 저절로 보내요. 앱을 지우거나 기록을 지우지 마세요."
       : editing ? `${numOf(editing)}번 기록을 고쳤어요.`
-      : `이 빗물받이는 '${g.l}'로 기록했어요. ${groupEmoji(team)} ${team}은 지금까지 ${mine}곳을 조사했어요!`;
+      : `이 빗물받이는 '${g.l}'로 기록했어요. ${groupEmoji(team)} ${team}은 ${phase === "family" ? "가족과 함께" : "수업 시간에"} 지금까지 ${mine}곳을 조사했어요!`;
     state.editId = null;
     onData(); goStep(DONE); if (!queued) load();
   }
@@ -1052,8 +1077,10 @@ details.changes summary{cursor:pointer;font-weight:700}
     const tc = TYPES.map(([k,e,l]) => [e,l,rs.filter(r => (r.types||[]).includes(k)).length]).filter(x => x[2]).sort((a,b)=>b[2]-a[2]);
     const ea = ENVS.map(([k,e,l]) => { const g = rs.filter(r => envList(r).includes(k)); return [e,l,g.length, g.length ? Math.round(g.reduce((s,r)=>s+(+r.coverage||0),0)/g.length) : 0]; }).filter(x => x[2]).sort((a,b)=>b[3]-a[3]);
     const gs = GROUPS.map(([g,e]) => [e,g,rsAll.filter(r => r.team === g).length]), mg = Math.max(1, ...gs.map(x=>x[2]));
-    const rc = REASONS.map(([k,e,l]) => [e,l,rs.filter(r => (r.reasons||[]).includes(k)).length]).filter(x => x[2]).sort((a,b)=>b[2]-a[2]);
-    const maxT = Math.max(1, ...tc.map(x=>x[2])), maxR = Math.max(1, ...rc.map(x=>x[2]));
+    const rClog = rs.filter(r => !isClear(r)), rClear = rs.filter(isClear);
+    const rc = REASONS.map(([k,e,l]) => [e,l,rClog.filter(r => (r.reasons||[]).includes(k)).length]).filter(x => x[2]).sort((a,b)=>b[2]-a[2]);
+    const cc = CLEAN_REASONS.map(([k,e,l]) => [e,l,rClear.filter(r => (r.reasons||[]).includes(k)).length]).filter(x => x[2]).sort((a,b)=>b[2]-a[2]);
+    const maxT = Math.max(1, ...tc.map(x=>x[2])), maxR = Math.max(1, ...rc.map(x=>x[2])), maxC = Math.max(1, ...cc.map(x=>x[2]));
     const top = rs.slice().sort((a,b) => (+b.coverage||0) - (+a.coverage||0)).filter(r => +r.coverage > 0).slice(0, 3);
     // 데이터 점검 (4~5차시·9~10차시 활동2)
     const dups = []; rsAll.forEach((a,i) => rsAll.slice(i+1).forEach(b => { if ((a.phase||"") === (b.phase||"") && dist(a,b) <= DUP_METERS) dups.push([a,b]); }));
@@ -1073,6 +1100,7 @@ details.changes summary{cursor:pointer;font-weight:700}
       ${tc.length ? `<div class="panel"><h3>가장 많이 나온 쓰레기는 ${tc[0][0]} ${tc[0][1]}!</h3>${tc.map(([e,l,c]) => `<div class="hbar"><span class="e" aria-hidden="true">${e}</span><span>${l}</span><span class="track"><i style="width:${c/maxT*100}%"></i></span><span class="v">${c}곳</span></div>`).join("")}</div>` : ""}
       ${ea.length ? `<div class="panel"><h3>어떤 곳이 많이 막혔을까?</h3><p style="margin:0 0 8px;color:var(--muted);font-size:.95rem">막대가 길수록 칸이 많이 색칠됐어요. (괄호는 조사한 곳 수)</p>${ea.map(([e,l,c,a]) => `<div class="hbar"><span class="e" aria-hidden="true">${e}</span><span>${l} (${c})</span><span class="track"><i style="width:${Math.max(a,2)}%;background:var(--sun)"></i></span><span class="v">${a}%</span></div>`).join("")}</div>` : ""}
       ${rc.length ? `<div class="panel"><h3>우리가 생각한 원인</h3><p style="margin:0 0 8px;color:var(--muted);font-size:.95rem">이건 우리 '생각'이에요. 지도와 사진이 이 생각을 뒷받침하는지 확인해 봐요.</p>${rc.map(([e,l,c]) => `<div class="hbar"><span class="e" aria-hidden="true">${e}</span><span>${l}</span><span class="track"><i style="width:${c/maxR*100}%;background:var(--g1)"></i></span><span class="v">${c}곳</span></div>`).join("")}</div>` : ""}
+      ${cc.length ? `<div class="panel"><h3>😀 막혀 있지 않은 빗물받이, 왜 깨끗할까?</h3><p style="margin:0 0 8px;color:var(--muted);font-size:.95rem">막히지 않았다고 생각한 ${rClear.length}곳에서 우리가 생각한 까닭이에요. 막힌 곳과 무엇이 다른지 비교해 봐요.</p>${cc.map(([e,l,c]) => `<div class="hbar"><span class="e" aria-hidden="true">${e}</span><span>${l}</span><span class="track"><i style="width:${c/maxC*100}%;background:var(--g0)"></i></span><span class="v">${c}곳</span></div>`).join("")}</div>` : ""}
       <div class="panel"><h3>🔍 우리 자료 점검하기</h3>${chk ? `<ul class="chk">${chk}</ul><p class="small">번호를 눌러 확인하고, 내 모둠 기록이면 ✏️ 고치기나 🗑️ 지우기를 해요.</p>` : `<p class="ok">✅ 점검할 것이 없어요. 아주 꼼꼼해요!</p>`}</div>
       <div class="panel"><h3>조사한 빗물받이 모두 보기</h3><div class="list">${rsAll.slice().reverse().map(r => itemHtml(r)).join("")}</div></div>`;
   }
@@ -1224,9 +1252,12 @@ details.changes summary{cursor:pointer;font-weight:700}
   async function openReason(id) {
     const r = state.reports.get(id); if (!r) return;
     state.rId = id;
-    state.rsel = new Set(r.reasons || []); $("#whyInput").value = r.why || "";
+    const sel = r.reasons || [];
+    // 이미 적은 게 있으면 그대로, 처음이면 '원활해요'(색칠 적음) 기록은 '막혀 있지 않았어요'로 시작해요
+    state.rclear = sel.includes("notclog") ? true : sel.length ? false : gOf(r) === 0;
+    state.rsel = new Set(sel.filter(k => k !== "notclog")); $("#whyInput").value = r.why || "";
     $("#saveSay").textContent = ""; $("#saveSay").className = "say";
-    refresh($("#reasonTiles"), reasonOn); syncCounts();
+    renderReasonSet();
     $("#rHeadImg").src = r.thumb || ""; $("#rHeadImg").classList.toggle("hide", !r.thumb);
     $("#rHeadText").textContent = `${numOf(id)}번 빗물받이`;
     const g = GR[gOf(r)];
@@ -1250,8 +1281,8 @@ details.changes summary{cursor:pointer;font-weight:700}
   $("#rNextBtn").onclick = () => { const nx = rBase().find(r => !reasonDone(r)); nx ? openReason(nx.id) : showRList(); };
   $("#rSave").onclick = async () => {
     const id = state.rId, r = state.reports.get(id), say = $("#saveSay"), btn = $("#rSave"); if (!r) return showRList();
-    if (!state.rsel.size && !$("#whyInput").value.trim()) return nudge(say, "생각한 원인을 하나 이상 고르거나, 까닭을 적어요.");
-    const rec = { reasons: [...state.rsel], why: $("#whyInput").value.trim() };
+    if (!state.rsel.size && !$("#whyInput").value.trim()) return nudge(say, state.rclear ? "깨끗한 까닭을 하나 이상 고르거나, 본 것을 적어요." : "생각한 원인을 하나 이상 고르거나, 까닭을 적어요.");
+    const rec = { reasons: state.rclear ? ["notclog", ...state.rsel] : [...state.rsel], why: $("#whyInput").value.trim() };
     btn.disabled = true; btn.textContent = "저장 중… ⏳";
     let queued = false;
     try { await api("reason", { id, record: rec }); }
@@ -1267,7 +1298,7 @@ details.changes summary{cursor:pointer;font-weight:700}
     const nx = rBase().find(x => !reasonDone(x));
     $("#rDoneEmoji").textContent = queued ? "📦" : "✅";
     $("#rDoneTitle").textContent = queued ? "기기에 보관했어요" : "저장했어요!";
-    $("#rDoneText").textContent = queued ? "인터넷이 다시 되면 저절로 보내요." : `${numOf(id)}번 빗물받이의 원인을 ${rec.reasons.length ? rec.reasons.length + "가지 " : ""}적었어요.` + (nx ? " 다음 빗물받이도 생각해 볼까요?" : " 모든 빗물받이의 원인을 생각해 봤어요! 🎉");
+    $("#rDoneText").textContent = queued ? "인터넷이 다시 되면 저절로 보내요." : `${numOf(id)}번 빗물받이의 ${state.rclear ? "막히지 않은 까닭" : "원인"}을 ${state.rsel.size ? state.rsel.size + "가지 " : ""}적었어요.` + (nx ? " 다음 빗물받이도 생각해 볼까요?" : " 모든 빗물받이의 원인을 생각해 봤어요! 🎉");
     $("#rNextBtn").classList.toggle("hide", !nx);
     $("#rView").classList.add("hide"); $("#rDone").classList.remove("hide");
     updateNav(); onData(); window.scrollTo({top:0});
